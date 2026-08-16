@@ -304,9 +304,7 @@
             </p>
             <button class="close-btn" onclick="closeMessage()">إغلاق الرسالة</button>
         </div>
-    </div>
-
-    <script>
+    </div>    <script>
         // قلوب الخلفية
         const heartsContainer = document.getElementById('hearts-container');
         const heartIcons = ['❤️', '🤍', '✨'];
@@ -321,31 +319,47 @@
             heartsContainer.appendChild(heart);
         }
 
-        // متغير المزيكا
         const bgMusic = document.getElementById('bgMusic');
         const musicBtn = document.getElementById('musicBtnToggle');
 
-        // فحص الباسورد
+        // 1. فحص الباسورد (مضاد للأخطاء)
         function checkPass() {
-            let pass = document.getElementById('pass-input').value.trim();
-            if (pass === "31/8" || pass === "31/8/2026" || pass === "R31/8" || pass === "31-8" || pass === "318") {
+            // تحويل الحروف لسمول عشان لو كتبت r بدل R يشتغل برضو
+            let pass = document.getElementById('pass-input').value.trim().toLowerCase();
+            
+            if (pass === "31/8" || pass === "31/8/2026" || pass === "r31/8" || pass === "31-8" || pass === "318") {
+                
+                // إخفاء رسالة الخطأ لو كانت موجودة
+                document.getElementById('error-text').style.display = 'none';
+                
+                // بدء إخفاء شاشة القفل
                 document.getElementById('lock-screen').classList.add('fade-out');
                 
-                // تشغيل المزيكا أول ما يفك القفل
-                bgMusic.play().then(() => {
-                    musicBtn.classList.add('playing');
-                }).catch(err => console.log("المتصفح منع التشغيل التلقائي"));
+                // محاولة تشغيل المزيكا بشكل آمن جداً
+                try {
+                    let playPromise = bgMusic.play();
+                    if (playPromise !== undefined) {
+                        playPromise.then(() => {
+                            musicBtn.classList.add('playing');
+                        }).catch(err => {
+                            console.log("سيتم تشغيل الموسيقى يدوياً من الداخل");
+                        });
+                    }
+                } catch(e) { console.log(e); }
 
+                // النقل لشاشة التحميل بعد نص ثانية
                 setTimeout(() => {
                     document.getElementById('lock-screen').classList.add('hidden');
                     startLoading();
                 }, 400);
+
             } else {
+                // إظهار رسالة الخطأ
                 document.getElementById('error-text').style.display = 'block';
             }
         }
 
-        // شريط التحميل
+        // 2. شريط التحميل الوهمي
         function startLoading() {
             let loadScreen = document.getElementById('loading-screen');
             loadScreen.classList.remove('hidden');
@@ -359,12 +373,18 @@
                 if (progress >= 100) {
                     progress = 100;
                     clearInterval(interval);
+                    
                     setTimeout(() => {
                         loadScreen.classList.add('fade-out');
                         setTimeout(() => {
                             loadScreen.classList.add('hidden');
                             document.getElementById('main-screen').classList.remove('hidden');
-                            confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#d6335a', '#d4af37', '#ffffff'] });
+                            
+                            // تشغيل الكونفيتي بشكل آمن
+                            try {
+                                confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#d6335a', '#d4af37', '#ffffff'] });
+                            } catch(e) {}
+
                         }, 500);
                     }, 500); 
                 }
@@ -373,16 +393,33 @@
             }, 250); 
         }
 
-        // زرار تشغيل/إيقاف المزيكا
+        // 3. زرار تشغيل/إيقاف المزيكا من جوه الموقع
         function toggleMusic() {
-            if (bgMusic.paused) {
-                bgMusic.play();
-                musicBtn.classList.add('playing');
-            } else {
-                bgMusic.pause();
-                musicBtn.classList.remove('playing');
-            }
+            try {
+                if (bgMusic.paused) {
+                    bgMusic.play();
+                    musicBtn.classList.add('playing');
+                } else {
+                    bgMusic.pause();
+                    musicBtn.classList.remove('playing');
+                }
+            } catch(e) {}
         }
 
-        // إشعار النبضة
-        function showNotif
+        // 4. إظهار وإخفاء إشعار النبضة
+        function showNotif() {
+            document.getElementById('notif-bar').classList.add('show');
+            try { confetti({ particleCount: 30, spread: 50, origin: { y: 0.4 }, colors: ['#ff4b69', '#d4af37'] }); } catch(e) {}
+        }
+        function hideNotif() {
+            document.getElementById('notif-bar').classList.remove('show');
+        }
+
+        // 5. فتح وقفل الرسالة الطويلة
+        function openMessage() {
+            document.getElementById('message-modal').classList.remove('hidden');
+        }
+        function closeMessage() {
+            document.getElementById('message-modal').classList.add('hidden');
+        }
+    </script>
