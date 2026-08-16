@@ -4,271 +4,291 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>مفاجأة روان</title>
-    <!-- استدعاء مكتبة الورق الملون (Confetti) -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
-        /* الخلفية بناتي ناعمة زي ما اتفقنا */
-        body { 
-            margin: 0; 
-            padding: 0; 
-            font-family: 'Segoe UI', Tahoma, sans-serif; 
-            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
-            color: #4a4a4a; 
-            overflow-x: hidden; 
-            width: 100%; 
-            min-height: 100vh;
+        /* إعدادات عامة وألوان الموقع (Dark & Elegant) */
+        :root {
+            --bg-color: #120a16; /* لون خلفية غامق شيك */
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --primary: #ff758c;
+            --accent: #ffd700; /* لون دهبي */
+            --text-main: #f8f8f8;
+            --text-muted: #b0a8b9;
         }
-        
-        .page { display: none; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; text-align: center; padding: 20px; box-sizing: border-box; }
-        .page.active { display: flex; animation: fadeIn 1s ease-in-out; }
-        h1 { font-size: 2.5rem !important; color: #ff4757; text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5); margin-bottom: 10px;}
-        h2 { font-size: 1.8rem !important; color: #ff758c; margin-bottom: 20px;}
-        
-        /* تصميم الزراير */
-        .btn { 
-            margin-top: 20px; 
-            padding: 15px 30px; 
-            font-size: 1.1rem; 
-            color: #fff; 
-            background: linear-gradient(45deg, #ff758c 0%, #ff7eb3 100%);
-            border: none; 
-            border-radius: 50px; 
-            cursor: pointer; 
-            box-shadow: 0 4px 15px rgba(255, 117, 140, 0.4); 
-            font-weight: bold;
-            transition: 0.3s;
-        }
-        .btn:hover { transform: scale(1.05); }
-        
-        /* =========================================
-           تصميم الألبوم الكبير (تقليب الصفحات 3D)
-           ========================================= */
-        .album-container {
-            perspective: 1500px; /* لعمل تأثير الـ 3D */
-            width: 90vw;
-            max-width: 350px;
-            margin-bottom: 20px;
-        }
-        
-        .album-page {
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
             width: 100%;
-            height: 450px;
-            background: #fff;
-            border-radius: 5px 15px 15px 5px; /* شكل غلاف الألبوم */
-            box-shadow: -5px 10px 20px rgba(0,0,0,0.2), inset -3px 0 10px rgba(0,0,0,0.05);
-            padding: 20px;
-            box-sizing: border-box;
+        }
+
+        /* كلاس لإخفاء الشاشات */
+        .hidden { display: none !important; }
+
+        /* شاشات الموقع */
+        .screen {
+            min-height: 100vh;
+            width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            transform-origin: right center; /* علشان يقلب من اليمين للشمال */
-            position: relative;
+            justify-content: center;
+            position: absolute;
+            top: 0; left: 0;
+            background-color: var(--bg-color);
+            z-index: 10;
         }
 
-        /* كلاس الأنيميشن اللي بيشتغل لما تدوس على الزرار */
-        .turn-page {
-            animation: flipPage 0.8s ease-in-out;
-        }
-
-        @keyframes flipPage {
-            0% { transform: rotateY(0deg); opacity: 1; }
-            49% { transform: rotateY(90deg); opacity: 0; }
-            50% { transform: rotateY(-90deg); opacity: 0; }
-            100% { transform: rotateY(0deg); opacity: 1; }
-        }
-
-        .album-page img { 
-            width: 100%; 
-            height: 320px; 
-            object-fit: cover; 
-            border-radius: 5px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
-            border: 5px solid #fff; /* برواز الصورة */
-        }
-        .album-page .caption { 
-            margin-top: 20px; 
-            font-size: 1.2rem; 
-            color: #ff758c; 
-            font-weight: bold; 
-        }
-
-        /* مربع الباسورد */
-        .password-box { 
-            background: rgba(255, 255, 255, 0.6); 
-            backdrop-filter: blur(10px); 
-            padding: 40px; 
+        /* =========================================
+           1. شاشة القفل (Lock Screen)
+           ========================================= */
+        .lock-icon { font-size: 4rem; margin-bottom: 20px; text-shadow: 0 0 20px var(--primary); }
+        .lock-box {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 30px;
             border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(255, 154, 158, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.8);
+            text-align: center;
+            width: 85%;
+            max-width: 350px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        input[type="text"] { 
-            padding: 12px; 
-            font-size: 1rem; 
-            width: 90%; 
-            max-width: 250px; 
-            text-align: center; 
-            border-radius: 25px; 
-            border: 2px solid #ff7eb3; 
+        .lock-input {
+            width: 80%;
+            padding: 15px;
+            margin: 20px 0;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--primary);
+            color: white;
+            font-size: 1.2rem;
+            text-align: center;
+            border-radius: 10px;
             outline: none;
-            color: #4a4a4a;
         }
-        
-        /* صفحة الاحتفال */
-        #page4 { justify-content: flex-start; padding-top: 40px; }
-        #typing-message { font-size: 1.3rem; padding: 0 15px; color: #333; line-height: 1.6; font-weight: 500; min-height: 180px;}
-        #special-wish { 
-            display: none; 
-            margin-top: 20px; 
-            font-size: 1.4rem; 
-            color: #ff4757; 
-            font-weight: bold; 
-            background: rgba(255, 255, 255, 0.7); 
-            padding: 15px; 
-            border-radius: 15px; 
-            box-shadow: 0 4px 15px rgba(255, 154, 158, 0.3);
-            border: 1px solid #fff;
+        .btn {
+            background: linear-gradient(45deg, #ff758c, #ff7eb3);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 117, 140, 0.4);
+            width: 100%;
         }
+        .error-msg { color: #ff4d4d; font-size: 0.9rem; margin-top: 10px; display: none; }
+
+        /* =========================================
+           2. شاشة التحميل (Loading Screen)
+           ========================================= */
+        .cake-icon { font-size: 5rem; margin-bottom: 20px; animation: bounce 2s infinite; }
+        .progress-container { width: 80%; max-width: 300px; background: rgba(255,255,255,0.1); border-radius: 20px; height: 10px; margin: 20px 0; overflow: hidden; }
+        .progress-bar { width: 0%; height: 100%; background: var(--primary); transition: width 0.1s; }
+        .percent-text { font-size: 1.5rem; font-weight: bold; color: var(--accent); }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        /* =========================================
+           3. الصفحة الرئيسية (Main Content)
+           ========================================= */
+        #main-screen { position: relative; z-index: 1; padding-bottom: 50px; }
         
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .header { text-align: center; padding: 40px 20px 20px; }
+        .header h1 { font-size: 2.2rem; margin: 0; color: var(--accent); }
+        .header p { color: var(--text-muted); font-size: 1.1rem; margin-top: 10px; }
+
+        .section-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px auto;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .section-title { font-size: 1.1rem; color: var(--accent); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;}
+
+        /* العداد التنازلي */
+        .countdown-container { display: flex; justify-content: center; gap: 15px; direction: ltr; }
+        .time-box { text-align: center; }
+        .time-box span { display: block; font-size: 1.8rem; font-weight: bold; color: white; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 10px; min-width: 50px;}
+        .time-box small { font-size: 0.8rem; color: var(--text-muted); margin-top: 5px; display: block; }
+
+        /* ألبوم الصور (Grid) */
+        .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .photo-grid img { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; border: 2px solid rgba(255,255,255,0.1); }
+
+        /* الرسالة السرية */
+        .secret-btn { background: rgba(0,0,0,0.5); border: 1px solid var(--primary); color: white; padding: 15px; border-radius: 15px; width: 100%; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.3s; }
+        .secret-btn:hover { background: var(--primary); }
+        .secret-content { display: none; margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 10px; font-size: 1.1rem; line-height: 1.8; text-align: justify; border-right: 3px solid var(--primary); }
+        
     </style>
 </head>
 <body>
 
-    <!-- الصفحة الأولى -->
-    <section id="page1" class="page active">
-        <h2 id="intro-text"></h2>
-        <button class="btn" onclick="nextPage('page2')" style="display: none;" id="btn1">يلا بينا!</button>
-    </section>
+    <div id="lock-screen" class="screen">
+        <div class="lock-icon">🔒</div>
+        <div class="lock-box">
+            <h2 style="margin: 0 0 10px; font-size: 1.4rem;">مغلق للأمان</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">اكتبي الباسورد عشان تدخلي (أول حرف من اسمك كابيتال + التاريخ)</p>
+            <input type="text" id="password-input" class="lock-input" placeholder="مثال: R31/8" dir="ltr">
+            <button class="btn" onclick="verifyPassword()">فك القفل ⭐</button>
+            <p id="lock-error" class="error-msg">الباسورد غلط يا روان، ركزي وحاولي تاني!</p>
+        </div>
+    </div>
 
-    <!-- الصفحة التانية (الألبوم الكبير) -->
-    <section id="page2" class="page">
-        <h2>ألبوم ذكرياتنا يا روان ❤️</h2>
+    <div id="loading-screen" class="screen hidden">
+        <div class="cake-icon">🎂</div>
+        <h2 style="margin-bottom: 0;">عيد ميلاد سعيد يا روان</h2>
+        <p style="color: var(--text-muted);">جاري تجهيز المفاجأة...</p>
+        <div class="progress-container">
+            <div id="progress-bar" class="progress-bar"></div>
+        </div>
+        <div id="percent-text" class="percent-text">0%</div>
+    </div>
+
+    <div id="main-screen" class="screen hidden" style="justify-content: flex-start; min-height: 100vh; position: relative;">
         
-        <div class="album-container">
-            <div class="album-page" id="albumPage">
-                <img id="albumPhoto" src="photo1.jpg" alt="صورة">
-                <div class="caption" id="albumCaption">أحلى أيام</div>
+        <div class="header">
+            <h1>🎉 روان 🎉</h1>
+            <p>كل سنة وانتي أختي الجدعة وبنت خالي الغالية.</p>
+        </div>
+
+        <div class="section-card">
+            <div class="section-title">⏳ العد التنازلي للمنتظر</div>
+            <p style="text-align: center; margin-bottom: 20px; font-size: 0.95rem;">يوم ميلادك هو بداية سنة جديدة كلها خير ليكي إن شاء الله.</p>
+            <div class="countdown-container">
+                <div class="time-box"><span id="days">00</span><small>يوم</small></div>
+                <div class="time-box"><span id="hours">00</span><small>ساعة</small></div>
+                <div class="time-box"><span id="mins">00</span><small>دقيقة</small></div>
+                <div class="time-box"><span id="secs">00</span><small>ثانية</small></div>
             </div>
         </div>
 
-        <div>
-            <button class="btn" onclick="flipToNextPhoto()" id="nextPhotoBtn" style="background: #fff; color: #ff758c;">اقلبي الصفحة 📖</button>
-            <br>
-            <button class="btn" onclick="nextPage('page3')" id="goToPassBtn" style="display: none; margin-top: 15px;">الخطوة الجاية..</button>
+        <div class="section-card">
+            <div class="section-title">✨ أمنية خاصة</div>
+            <p style="font-size: 1.1rem; line-height: 1.6; text-align: center;">
+                يارب قبل يوم 31/8 الجاي، تكوني حققتي أكبر حاجة بتتمانيها، وأشوفك دايماً ناجحة ومبسوطة وضحكتك مابتفارقش وشك. 🙏
+            </p>
         </div>
-    </section>
 
-    <!-- الصفحة التالتة (الباسورد) -->
-    <section id="page3" class="page">
-        <div class="password-box">
-            <h2>عشان تفتحي الهدية 🎁</h2>
-            <p style="margin-bottom: 20px;">اكتبي كلمة السر (R31/8)</p>
-            <input type="text" id="secret-pass" placeholder="R31/8">
-            <br><button class="btn" onclick="checkPassword()">افتحي الهدية</button>
-            <p id="error-msg" style="color: #ff4757; display: none; font-weight: bold; margin-top: 15px;">كلمة السر غلط يا روان!</p>
+        <div class="section-card">
+            <div class="section-title">📸 ألبوم الذكريات</div>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">شوية صور وذكريات حلوة متتنسيش.</p>
+            <div class="photo-grid">
+                <img src="photo1.jpg" alt="صورة 1">
+                <img src="photo2.jpg" alt="صورة 2">
+                <img src="photo3.jpg" alt="صورة 3">
+                <img src="photo4.jpg" alt="صورة 4">
+            </div>
         </div>
-    </section>
 
-    <!-- الصفحة الرابعة (الرسالة والأمنية) -->
-    <section id="page4" class="page">
-        <h1>🎉 مفاجـأة! 🎉</h1>
-        <div id="typing-message"></div>
-        <div id="special-wish">ويارب قبل يوم 31/8 الجاي، تكوني حققتي أكبر حاجة بتتمانيها ونفرح بيكي! 🙏✨</div>
-    </section>
+        <div class="section-card">
+            <div class="section-title">💌 رسالة أخوية</div>
+            <button class="secret-btn" onclick="toggleMessage()">
+                <span>افتحي الرسالة دي</span> 🔓
+            </button>
+            <div id="secret-msg" class="secret-content">
+                كل سنة وانتي طيبة يا روان يا أحلى وأجدع بنت خال في الدنيا! حبيت أعملك حاجة مختلفة السنة دي تفضلي فكراها. مهما كبرنا ومهما المشاغل خدتنا، هتفضلي دايماً الأخت اللي بفتخر بيها واللي عارف إنها دايماً في ضهري. يارب السنة دي تكون سنة سعيدة عليكي، تحققي فيها كل اللي بتحلمي بيه وأكتر. استعدي بقى عشان تدفعي حساب الموقع ده 😂.. أخوكي يوسف.
+            </div>
+        </div>
 
-    <!-- ==============================================
-         أكواد البرمجة (الجافاسكريبت)
-         ============================================== -->
+    </div>
+
     <script>
-        // دالة التنقل بين الصفحات
-        function nextPage(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            window.scrollTo(0, 0);
-            if (pageId === 'page4') { fireConfetti(); startFinalMessage(); }
-        }
-
-        // تأثير الكتابة في الصفحة الأولى
-        const introText = "في رسالة مهمة جداً عشانك يا روان... جاهزة؟";
-        let i = 0;
-        function typeIntro() {
-            if (i < introText.length) {
-                document.getElementById('intro-text').innerHTML += introText.charAt(i++);
-                setTimeout(typeIntro, 80);
-            } else { document.getElementById('btn1').style.display = 'inline-block'; }
-        }
-        window.onload = typeIntro;
-
-        // ==============================================
-        // نظام الألبوم (حط أسماء الـ 25 صورة بتوعك هنا!)
-        // ==============================================
-        const myPhotos = [
-            { src: "photo1.jpg", caption: "أحلى أيام" },
-            { src: "photo2.jpg", caption: "يوم ما كسرنا الدنيا" },
-            { src: "photo3.jpg", caption: "ذكريات متتنسيش" },
-            { src: "photo4.jpg", caption: "كل سنة وانتي طيبة" },
-            // تقدر تنسخ السطر اللي فوق ده وتكرره لحد 25 مرة وتغير اسم الصورة والكلام
-        ];
-
-        let currentPicIndex = 0;
-
-        function flipToNextPhoto() {
-            let album = document.getElementById('albumPage');
-            
-            // 1. تشغيل أنيميشن تقليب الصفحة
-            album.classList.remove('turn-page');
-            void album.offsetWidth; // ريستارت للأنيميشن
-            album.classList.add('turn-page');
-
-            // 2. في نص الأنيميشن (والصفحة مقلوبة ومخفية)، هنغير الصورة والكلام
-            setTimeout(() => {
-                currentPicIndex++;
-                
-                if (currentPicIndex < myPhotos.length) {
-                    document.getElementById('albumPhoto').src = myPhotos[currentPicIndex].src;
-                    document.getElementById('albumCaption').innerText = myPhotos[currentPicIndex].caption;
-                } else {
-                    // لو الصور خلصت، هنجيب الصورة الأولى تاني ونظهر زرار "الخطوة الجاية"
-                    document.getElementById('albumPhoto').src = myPhotos[0].src;
-                    document.getElementById('albumCaption').innerText = "دي كانت أحلى ذكرياتنا!";
-                    document.getElementById('nextPhotoBtn').style.display = 'none';
-                    document.getElementById('goToPassBtn').style.display = 'inline-block';
-                }
-            }, 400); // 400 ملي ثانية (يعني نص وقت الأنيميشن بالظبط)
-        }
-
-        // ==============================================
-
-        // فحص الباسورد
-        function checkPassword() {
-            let pass = document.getElementById('secret-pass').value.trim();
-            if (pass === "R31/8" || pass === "R31-8" || pass === "R318") { nextPage('page4'); }
-            else { document.getElementById('error-msg').style.display = 'block'; }
-        }
-
-        // الرسالة الطويلة في النهاية
-        const msg = "كل سنة وانتي طيبة يا روان يا أحلى وأجدع بنت خال في الدنيا! حبيت أعملك حاجة مختلفة السنة دي تفضلي فكراها. مهما كبرنا ومهما المشاغل خدتنا، هتفضلي دايماً الأخت اللي بفتخر بيها واللي عارف إنها دايماً في ضهري. يارب السنة دي تكون سنة سعيدة عليكي، تحققي فيها كل اللي بتحلمي بيه وأكتر، وأشوفك دايماً ناجحة ومبسوطة. كل سنة وانتي طيبة يا غالية! أخوكي يوسف.";
-        let mIndex = 0;
-        function startFinalMessage() {
-            document.getElementById('typing-message').innerHTML = ""; // تصفير النص
-            function type() {
-                if (mIndex < msg.length) {
-                    document.getElementById('typing-message').innerHTML += msg.charAt(mIndex++);
-                    setTimeout(type, 50);
-                } else { document.getElementById('special-wish').style.display = 'block'; }
+        // 1. فحص الباسورد والانتقال لشاشة التحميل
+        function verifyPassword() {
+            let pass = document.getElementById('password-input').value.trim();
+            if (pass === "R31/8" || pass === "R31-8" || pass === "R318") {
+                document.getElementById('lock-screen').classList.add('hidden');
+                startLoading();
+            } else {
+                document.getElementById('lock-error').style.display = 'block';
             }
-            type();
         }
 
-        // الورق الملون (Confetti)
-        function fireConfetti() {
+        // 2. شاشة التحميل الوهمية
+        function startLoading() {
+            let loadScreen = document.getElementById('loading-screen');
+            loadScreen.classList.remove('hidden');
+            
+            let progress = 0;
+            let bar = document.getElementById('progress-bar');
+            let text = document.getElementById('percent-text');
+            
+            let interval = setInterval(() => {
+                progress += Math.floor(Math.random() * 10) + 5; // زيادة عشوائية
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        loadScreen.classList.add('hidden');
+                        showMainScreen();
+                    }, 500); // استنى نص ثانية بعد ما يوصل 100
+                }
+                bar.style.width = progress + '%';
+                text.innerText = progress + '%';
+            }, 300); // سرعة التحميل
+        }
+
+        // 3. إظهار الشاشة الرئيسية وتشغيل الـ Confetti
+        function showMainScreen() {
+            let mainScreen = document.getElementById('main-screen');
+            mainScreen.classList.remove('hidden');
+            // تشغيل الورق الملون
             var end = Date.now() + 5000;
             (function frame() {
-                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ff9a9e', '#fecfef', '#ff7eb3'] });
-                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ff9a9e', '#fecfef', '#ff7eb3'] });
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ff758c', '#ffd700', '#ffffff'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ff758c', '#ffd700', '#ffffff'] });
                 if (Date.now() < end) requestAnimationFrame(frame);
             }());
         }
+
+        // 4. فتح وقفل الرسالة السرية
+        function toggleMessage() {
+            let msg = document.getElementById('secret-msg');
+            if (msg.style.display === "block") {
+                msg.style.display = "none";
+            } else {
+                msg.style.display = "block";
+                // سكرول لتحت عشان الرسالة تبان
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            }
+        }
+
+        // 5. العداد التنازلي ليوم 31 أغسطس
+        function updateCountdown() {
+            const now = new Date();
+            let currentYear = now.getFullYear();
+            let bday = new Date(`August 31, ${currentYear} 00:00:00`);
+            
+            // لو عيد ميلادها عدى السنة دي، احسب على السنة الجاية
+            if (now > bday) {
+                bday = new Date(`August 31, ${currentYear + 1} 00:00:00`);
+            }
+
+            const diff = bday - now;
+            
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const m = Math.floor((diff / 1000 / 60) % 60);
+            const s = Math.floor((diff / 1000) % 60);
+
+            document.getElementById('days').innerText = d < 10 ? '0' + d : d;
+            document.getElementById('hours').innerText = h < 10 ? '0' + h : h;
+            document.getElementById('mins').innerText = m < 10 ? '0' + m : m;
+            document.getElementById('secs').innerText = s < 10 ? '0' + s : s;
+        }
+        
+        setInterval(updateCountdown, 1000);
+        updateCountdown(); // تشغيل فوري
+
     </script>
 </body>
 </html>
