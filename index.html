@@ -4,108 +4,283 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>مفاجأة روان</title>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital@1&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
     <style>
-        /* =========================================
-           ألوان وتصميم الفيديو الأصلي (Dark Red & Gold)
-           ========================================= */
+        /* الألوان الأصلية من الصورة */
         :root {
-            --bg-dark: #140508;
-            --card-bg: #230810;
-            --primary: #d6335a;
-            --gold: #e8c27a;
-            --text-main: #ffffff;
-            --text-muted: #a88890;
+            --bg-main: #140508; /* لون الخلفية الغامق جدا */
+            --card-bg-top: #3a0d18; /* تدرج الكارت من فوق */
+            --card-bg-bottom: #1a050a; /* تدرج الكارت من تحت */
+            --gold: #d4af37; /* اللون الذهبي */
+            --gold-light: #fbe29f;
+            --pink-btn: linear-gradient(90deg, #ff4b69, #ff7eb3);
+            --quote-bg: #fcf6eb; /* لون المربع الكريمي */
         }
 
         body {
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Tahoma, sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
+            background-color: var(--bg-main);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
             overflow-x: hidden;
+            /* خلفية الورد الطاير بهتان */
+            background-image: radial-gradient(circle at center, #2a0810 0%, #140508 100%);
+        }
+
+        /* -------------------------------------
+           الكارت الأساسي (نفس اللي في الصورة)
+           ------------------------------------- */
+        .main-card {
+            background: linear-gradient(180deg, var(--card-bg-top) 0%, var(--card-bg-bottom) 100%);
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 25px;
+            padding: 20px;
+            box-sizing: border-box;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            position: relative;
+            z-index: 10;
+            margin-top: 20px;
+        }
+
+        /* إشعار النبضة اللي فوق */
+        .notification-bar {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-radius: 12px;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: #ddd;
+            margin-bottom: 30px;
+            opacity: 0; /* مخفي في البداية وبيظهر بالزرار */
+            transition: 0.3s;
+        }
+        .notification-bar.show { opacity: 1; }
+        .close-btn { color: var(--gold); cursor: pointer; font-weight: bold; }
+
+        /* الاسم (Rawan) */
+        .name-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            text-align: center;
+            margin: 0;
+            background: linear-gradient(180deg, #ffffff 0%, #ffc1cc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-style: italic;
+            text-shadow: 0 4px 15px rgba(255, 107, 129, 0.3);
+        }
+
+        /* شريط التاريخ */
+        .date-badge-container { text-align: center; margin: 15px 0 25px 0; }
+        .date-badge {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            border-radius: 20px;
+            padding: 5px 20px;
+            display: inline-block;
+            font-size: 0.9rem;
+            color: var(--gold-light);
+            letter-spacing: 2px;
+        }
+
+        /* مربع الكلام الكريمي */
+        .quote-box {
+            background-color: var(--quote-bg);
+            border-radius: 20px;
+            padding: 25px 20px;
+            text-align: center;
+            color: #333;
+            font-family: 'Amiri', serif;
+            font-size: 1.2rem;
+            font-style: italic;
+            font-weight: bold;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            position: relative;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+            /* الخط المنقط الداخلي زي الصورة */
+            border: 1px solid #eaddcf;
+        }
+        .quote-box::before {
+            content: '';
+            position: absolute;
+            top: 5px; left: 5px; right: 5px; bottom: 5px;
+            border: 1px dashed rgba(212, 175, 55, 0.4);
+            border-radius: 15px;
+            pointer-events: none;
+        }
+
+        /* زرار أرسل نبضة حب */
+        .pulse-btn {
+            background: var(--pink-btn);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50px;
+            padding: 15px;
             width: 100%;
-            -webkit-tap-highlight-color: transparent;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 0 20px rgba(255, 75, 105, 0.5);
+            animation: pulseGlow 2s infinite;
+        }
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 15px rgba(255, 75, 105, 0.4); transform: scale(1); }
+            50% { box-shadow: 0 0 25px rgba(255, 75, 105, 0.7); transform: scale(1.02); }
+            100% { box-shadow: 0 0 15px rgba(255, 75, 105, 0.4); transform: scale(1); }
         }
 
-        .hidden { display: none !important; }
-
-        /* القلوب الحمراء الطايرة في الخلفية */
-        .floating-hearts {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 0;
-        }
-        .heart {
-            position: absolute; color: rgba(214, 51, 90, 0.3);
-            animation: floatUp linear infinite; bottom: -50px;
-        }
-        @keyframes floatUp {
-            0% { transform: translateY(0) scale(0.8); opacity: 1; }
-            100% { transform: translateY(-100vh) scale(1.2); opacity: 0; }
-        }
-
-        /* -------------------------------------
-           1. شاشة القفل (Lock Screen)
-           ------------------------------------- */
-        #lock-screen {
-            height: 100vh; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; position: relative; z-index: 10;
-        }
-        .lock-container { text-align: center; width: 90%; max-width: 400px; z-index: 2; }
-        
-        .lock-icon-wrapper { margin-bottom: 15px; }
-        .lock-icon { font-size: 4rem; color: var(--gold); }
-        .lock-badge {
-            background-color: #6a1024; color: var(--text-main); padding: 5px 20px;
-            border-radius: 20px; font-size: 0.9rem; display: inline-block; margin-bottom: 25px;
-            border: 1px solid var(--primary);
-        }
-        .lock-text { color: var(--gold); font-size: 1.1rem; margin-bottom: 20px; }
-        
-        .lock-input {
-            width: 85%; padding: 15px; background: #3b0b18;
-            border: 1px solid var(--primary); color: white; text-align: center;
-            border-radius: 12px; font-size: 1.2rem; margin-bottom: 20px; outline: none;
-        }
-        .lock-input::placeholder { color: #885c67; }
-        
-        .unlock-btn {
-            background: linear-gradient(90deg, #d6335a, #ff4d79);
-            color: white; border: none; padding: 15px 30px; border-radius: 50px;
-            font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 90%;
-            box-shadow: 0 4px 15px rgba(214, 51, 90, 0.4); transition: 0.3s;
+        .footer-text {
+            text-align: center;
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.4);
+            margin-top: 15px;
         }
 
         /* -------------------------------------
-           2. شاشة الانتقال (صورة القلب والمزيكا)
+           الصورة المدورة اللي تحت الكارت
            ------------------------------------- */
-        #transition-screen {
-            height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background-color: var(--bg-dark); position: fixed; top: 0; left: 0; width: 100%; z-index: 20;
+        .photo-section {
+            width: 90%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 30px;
+            position: relative;
+            padding-bottom: 50px;
         }
-        .transition-circle {
-            width: 150px; height: 150px; border-radius: 50%; overflow: hidden;
-            border: 3px solid var(--gold); box-shadow: 0 0 30px rgba(232, 194, 122, 0.3);
-            margin-bottom: 20px; animation: pulseImg 1.5s infinite;
+        .circle-photo {
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            border: 3px solid var(--gold);
+            padding: 5px;
+            box-sizing: border-box;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
         }
-        .transition-circle img { width: 100%; height: 100%; object-fit: cover; }
-        .music-note { font-size: 2rem; color: var(--primary); animation: bounceMusic 1s infinite; }
+        .circle-photo img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
         
-        @keyframes pulseImg { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-        @keyframes bounceMusic { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-
-        /* -------------------------------------
-           3. شاشة التحميل (الكيكة)
-           ------------------------------------- */
-        #loading-screen {
-            height: 100vh; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; z-index: 15; background-color: var(--bg-dark);
+        /* زرار المزيكا */
+        .music-btn {
+            position: absolute;
+            bottom: 60px;
+            right: 40px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 1px solid var(--gold);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--gold);
+            font-size: 1.2rem;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            cursor: pointer;
+            animation: bounce 2s infinite;
         }
-        .cake-icon { font-size: 5rem; margin-bottom: 15px; }
-        .loading-title { color: var(--gold); font-size: 1.2rem; margin: 0 0 5px 0; font-weight: normal; }
-        .loading-name { color: #5bc0eb; font-size: 3rem; margin: 0 0 20px 0; font-weight: bold; letter-spacing: 2px; }
-        .loading-subtitle { color: var(--text-muted); font-size: 0.9rem; text-align: center; width: 80%; margin-bottom: 20px;}
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* ورد خفيف طاير في الخلفية */
+        .rose { position: fixed; color: rgba(214, 51, 90, 0.15); font-size: 1.5rem; animation: floatUp 10s linear infinite; z-index: 1;}
+        @keyframes floatUp { 0% { transform: translateY(100vh) rotate(0deg); } 100% { transform: translateY(-100vh) rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div class="rose" style="left: 10%; animation-delay: 0s;">🌹</div>
+    <div class="rose" style="left: 80%; animation-delay: 2s;">🌹</div>
+    <div class="rose" style="left: 40%; animation-delay: 5s;">🌹</div>
+    <div class="rose" style="left: 70%; animation-delay: 7s;">🌹</div>
+
+    <div style="display: flex; flex-direction: column; align-items: center; width: 100%; z-index: 5;">
+        
+        <div class="main-card">
+            
+            <div class="notification-bar" id="notif-bar">
+                <span class="close-btn" onclick="hideNotif()">✖</span>
+                <span>أرسلت نبضة مودة ودفء رومانسي إلى روان! ❤️</span>
+                <span style="font-size: 1.2rem;">🌌</span>
+            </div>
+
+            <div style="text-align: center; color: var(--gold); font-size: 1.5rem; margin-bottom: -15px;">✧</div>
+
+            <h1 class="name-title">Rawan</h1>
+
+            <div class="date-badge-container">
+                <div class="date-badge">
+                    🎂 200X • 08 • 31 🌠
+                </div>
+            </div>
+
+            <div class="quote-box">
+                "عامك الجديد وعمري ما يكملوش غير بنور عينيكي و ضحكة قلبك الصافية"
+            </div>
+
+            <button class="pulse-btn" onclick="showNotif()">
+                أرسل نبضة حب 💖
+            </button>
+
+            <div class="footer-text">
+                احتفالاً بيوم ميلادك المميز 💖
+            </div>
+        </div>
+
+        <div class="photo-section">
+            <div class="circle-photo">
+                <img src="photo1.jpg" alt="صورة روان">
+            </div>
+            
+            <div class="music-btn">
+                🎵
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // دالة إظهار الإشعار لما تدوس على زرار (أرسل نبضة حب)
+        function showNotif() {
+            document.getElementById('notif-bar').classList.add('show');
+            // تشغيل تأثير احتفال خفيف
+            confetti({
+                particleCount: 30,
+                spread: 50,
+                origin: { y: 0.4 },
+                colors: ['#ff4b69', '#d4af37']
+            });
+        }
+
+        // دالة إخفاء الإشعار
+        function hideNotif() {
+            document.getElementById('notif-bar').classList.remove('show');
+        }
+    </script>
+</body>
+</html>
         
         .progress-bar-bg {
             background: #3b0b18; border-radius: 10px; height: 10px; width: 70%; overflow: hidden; margin-bottom: 10px;
