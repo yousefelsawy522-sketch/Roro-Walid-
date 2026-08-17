@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>💓عيد ميلاد رورو💓</title>
+    <title>مفاجأة روان</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:ital@1&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
@@ -170,7 +170,7 @@
         .seal-text { color: var(--gold); font-weight: bold; font-size: 0.95rem; }
 
         /* -------------------------------------
-           4. نافذة الرسالة الطويلة
+           4. نافذة الرسالة الطويلة (Modal)
            ------------------------------------- */
         #message-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -187,6 +187,7 @@
             background: #d6335a; color: white; border: none; padding: 12px;
             width: 100%; border-radius: 10px; font-size: 1.1rem; font-weight: bold; margin-top: 20px; cursor: pointer;
         }
+
     </style>
 </head>
 <body>
@@ -318,33 +319,39 @@
             heartsContainer.appendChild(heart);
         }
 
-        const bgMusic = document.getElementById('bgMusic');
-        const musicBtn = document.getElementById('musicBtnToggle');
-
-        // فحص الباسورد + تشغيل المزيكا
+        // فحص الباسورد + تشغيل المزيكا (بطريقة آمنة مليون المية)
         function checkPass() {
             let pass = document.getElementById('pass-input').value.trim();
             
-            // بيقبل أي حاجة فيها 31 
+            // بيقبل أي حاجة فيها 31 أو حرف R
             if (pass.includes("31") || pass.includes("٣١") || pass.toLowerCase().includes("r")) {
                 
                 document.getElementById('error-text').style.display = 'none';
                 document.getElementById('lock-screen').classList.add('fade-out');
                 
-                // تشغيل المزيكا لما تدوس على الزرار (علشان يشتغل بدون ما المتصفح يمنعه)
-                if (bgMusic) {
-                    let playPromise = bgMusic.play();
-                    if (playPromise !== undefined) {
-                        playPromise.then(() => {
-                            if (musicBtn) musicBtn.classList.add('playing');
-                        }).catch(err => console.log("المتصفح منع التشغيل التلقائي للمزيكا"));
-                    }
-                }
-
+                // 1. ننقلك للشاشة اللي بعدها فوراً وبدون أي تعطيل
                 setTimeout(() => {
                     document.getElementById('lock-screen').classList.add('hidden');
                     startLoading();
                 }, 400);
+
+                // 2. نحاول نشغل المزيكا (لو فيها مشكلة، الموقع مش هيقف وهيكمل عادي)
+                setTimeout(() => {
+                    try {
+                        const bgMusic = document.getElementById('bgMusic');
+                        const musicBtn = document.getElementById('musicBtnToggle');
+                        if (bgMusic) {
+                            let playPromise = bgMusic.play();
+                            if (playPromise !== undefined) {
+                                playPromise.then(() => {
+                                    if (musicBtn) musicBtn.classList.add('playing');
+                                }).catch(err => console.log("المتصفح هيحتاج تشغيل المزيكا يدوياً من الزرار الداخلي"));
+                            }
+                        }
+                    } catch(e) { 
+                        console.log("ملف الصوت غير موجود، بس الموقع هيكمل عادي"); 
+                    }
+                }, 500);
 
             } else {
                 document.getElementById('error-text').style.display = 'block';
@@ -370,16 +377,4 @@
                         setTimeout(() => {
                             loadScreen.classList.add('hidden');
                             document.getElementById('main-screen').classList.remove('hidden');
-                            try { confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#d6335a', '#d4af37', '#ffffff'] }); } catch(e){}
-                        }, 500);
-                    }, 500); 
-                }
-                bar.style.width = progress + '%';
-                text.innerText = progress + '%';
-            }, 250); 
-        }
-
-        // زرار إيقاف وتشغيل المزيكا
-        function toggleMusic() {
-            if (bgMusic) {
-                if (bgMusic.
+                            try { confetti({ partic
