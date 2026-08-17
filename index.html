@@ -7,9 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Amiri:ital@1&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
-        /* =========================================
-           الألوان الأساسية والتصميم
-           ========================================= */
         :root {
             --bg-main: #140508; 
             --card-bg-top: #3a0d18; 
@@ -27,40 +24,29 @@
             background-color: var(--bg-main); color: var(--text-main);
             overflow-x: hidden; width: 100%; min-height: 100vh;
             background-image: radial-gradient(circle at center, #2a0810 0%, #140508 100%);
-            -webkit-tap-highlight-color: transparent;
         }
-
-        .hidden { display: none !important; }
-        .fade-in { animation: fadeIn 0.5s ease-in; }
-        .fade-out { animation: fadeOut 0.5s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; display: none; } }
 
         /* القلوب الطايرة في الخلفية */
         .floating-hearts { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
         .heart { position: absolute; color: rgba(214, 51, 90, 0.2); animation: floatUp linear infinite; bottom: -50px; }
         @keyframes floatUp { 0% { transform: translateY(0) scale(0.8); opacity: 1; } 100% { transform: translateY(-100vh) scale(1.2); opacity: 0; } }
 
-        /* الشاشات الأساسية */
+        /* تصميم الشاشات المشترك */
         .screen {
             min-height: 100vh; width: 100%; display: flex; flex-direction: column;
             align-items: center; justify-content: center; position: fixed;
             top: 0; left: 0; z-index: 10; background-color: var(--bg-main);
         }
 
-        /* -------------------------------------
-           1. شاشة القفل 
-           ------------------------------------- */
+        /* 1. شاشة القفل */
         .lock-container { text-align: center; width: 90%; max-width: 400px; z-index: 2; }
         .lock-icon { font-size: 4rem; color: var(--gold); margin-bottom: 10px;}
         .lock-badge { background-color: #6a1024; color: var(--text-main); padding: 5px 20px; border-radius: 20px; font-size: 0.9rem; display: inline-block; margin-bottom: 25px; border: 1px solid #d6335a; }
         .lock-text { color: var(--gold); font-size: 1.1rem; margin-bottom: 20px; }
-        .lock-input { width: 85%; padding: 15px; background: #3b0b18; border: 1px solid #d6335a; color: white; text-align: center; border-radius: 12px; font-size: 1.2rem; margin-bottom: 20px; outline: none; box-sizing: border-box; }
+        .lock-input { width: 85%; padding: 15px; background: #3b0b18; border: 1px solid #d6335a; color: white; text-align: center; border-radius: 12px; font-size: 1.2rem; margin-bottom: 20px; outline: none; }
         .unlock-btn { background: var(--pink-btn); color: white; border: none; padding: 15px 30px; border-radius: 50px; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 85%; box-shadow: 0 4px 15px rgba(214, 51, 90, 0.4); }
 
-        /* -------------------------------------
-           2. شاشة التحميل 
-           ------------------------------------- */
+        /* 2. شاشة التحميل */
         .cake-icon { font-size: 5rem; margin-bottom: 15px; }
         .loading-title { color: var(--gold); font-size: 1.2rem; margin: 0 0 5px 0; }
         .loading-name { color: #5bc0eb; font-size: 3rem; margin: 0 0 20px 0; font-weight: bold; letter-spacing: 2px; }
@@ -69,9 +55,7 @@
         .progress-fill { background: #d6335a; height: 100%; width: 0%; transition: width 0.2s; }
         .progress-text { color: var(--gold); font-weight: bold; font-size: 1.2rem; }
 
-        /* -------------------------------------
-           3. الصفحة الرئيسية 
-           ------------------------------------- */
+        /* 3. الصفحة الرئيسية */
         #main-screen { position: relative; z-index: 5; padding: 20px 10px 80px 10px; display: flex; flex-direction: column; align-items: center; width: 100%; box-sizing: border-box;}
         
         .hero-card {
@@ -85,109 +69,44 @@
             background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(212, 175, 55, 0.4);
             border-radius: 12px; padding: 10px 15px; display: flex; justify-content: space-between;
             align-items: center; font-size: 0.8rem; color: #ddd; margin-bottom: 20px;
-            opacity: 0; transition: 0.3s;
+            display: none;
         }
-        .notification-bar.show { opacity: 1; }
+        
         .close-notif { color: var(--gold); cursor: pointer; font-weight: bold; font-size: 1.2rem;}
 
-        .name-title {
-            font-family: 'Playfair Display', serif; font-size: 3.5rem; text-align: center;
-            margin: 0; background: linear-gradient(180deg, #ffffff 0%, #ffc1cc 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            font-style: italic; text-shadow: 0 4px 15px rgba(255, 107, 129, 0.3);
-        }
-
+        .name-title { font-family: 'Playfair Display', serif; font-size: 3.5rem; text-align: center; margin: 0; background: linear-gradient(180deg, #ffffff 0%, #ffc1cc 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-style: italic; }
         .date-badge-container { text-align: center; margin: 15px 0 25px 0; }
-        .date-badge {
-            background: rgba(0,0,0,0.3); border: 1px solid rgba(212, 175, 55, 0.5);
-            border-radius: 20px; padding: 5px 20px; display: inline-block;
-            font-size: 0.9rem; color: var(--gold-light); letter-spacing: 2px;
-        }
+        .date-badge { background: rgba(0,0,0,0.3); border: 1px solid rgba(212, 175, 55, 0.5); border-radius: 20px; padding: 5px 20px; display: inline-block; font-size: 0.9rem; color: var(--gold-light); letter-spacing: 2px; }
 
-        .quote-box {
-            background-color: var(--quote-bg); border-radius: 20px; padding: 25px 20px;
-            text-align: center; color: #333; font-family: 'Amiri', serif;
-            font-size: 1.2rem; font-style: italic; font-weight: bold; line-height: 1.8;
-            margin-bottom: 30px; position: relative; box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
-            border: 1px solid #eaddcf;
-        }
-        .quote-box::before {
-            content: ''; position: absolute; top: 5px; left: 5px; right: 5px; bottom: 5px;
-            border: 1px dashed rgba(212, 175, 55, 0.4); border-radius: 15px; pointer-events: none;
-        }
+        .quote-box { background-color: var(--quote-bg); border-radius: 20px; padding: 25px 20px; text-align: center; color: #333; font-family: 'Amiri', serif; font-size: 1.2rem; font-style: italic; font-weight: bold; line-height: 1.8; margin-bottom: 30px; border: 1px solid #eaddcf; }
 
-        .pulse-btn {
-            background: var(--pink-btn); color: white; border: 2px solid rgba(255, 255, 255, 0.5);
-            border-radius: 50px; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold;
-            cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px;
-            box-shadow: 0 0 20px rgba(255, 75, 105, 0.5); animation: pulseGlow 2s infinite;
-        }
-        @keyframes pulseGlow { 0% { box-shadow: 0 0 15px rgba(255, 75, 105, 0.4); transform: scale(1); } 50% { box-shadow: 0 0 25px rgba(255, 75, 105, 0.7); transform: scale(1.02); } 100% { box-shadow: 0 0 15px rgba(255, 75, 105, 0.4); transform: scale(1); } }
-
-        .circle-photo-container {
-            position: relative; display: flex; justify-content: center; margin-top: 30px; width: 100%;
-        }
-        .circle-photo {
-            width: 200px; height: 200px; border-radius: 50%; border: 3px solid var(--gold);
-            padding: 5px; box-sizing: border-box; box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
-        }
+        .pulse-btn { background: var(--pink-btn); color: white; border: 2px solid rgba(255, 255, 255, 0.5); border-radius: 50px; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        
+        .circle-photo-container { position: relative; display: flex; justify-content: center; margin-top: 30px; width: 100%; }
+        .circle-photo { width: 200px; height: 200px; border-radius: 50%; border: 3px solid var(--gold); padding: 5px; box-sizing: border-box; }
         .circle-photo img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
         
-        .music-btn {
-            position: absolute; bottom: 10px; right: 10%; width: 45px; height: 45px;
-            border-radius: 50%; border: 1px solid var(--gold); display: flex;
-            justify-content: center; align-items: center; color: var(--gold);
-            font-size: 1.2rem; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px);
-            cursor: pointer; box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
-        }
-        .music-btn.playing { animation: pulseCircle 1.5s infinite; color: #ff4b69; border-color: #ff4b69; }
+        .music-btn { position: absolute; bottom: 10px; right: 10%; width: 45px; height: 45px; border-radius: 50%; border: 1px solid var(--gold); display: flex; justify-content: center; align-items: center; color: var(--gold); font-size: 1.2rem; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); cursor: pointer; }
 
-        .card {
-            background: #230810; border-radius: 15px; padding: 20px; width: 100%; max-width: 450px;
-            margin-bottom: 20px; border: 1px solid #4a1524; box-shadow: 0 5px 15px rgba(0,0,0,0.5); box-sizing: border-box;
-        }
-        .card-header {
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid #4a1524; padding-bottom: 10px; margin-bottom: 15px;
-        }
+        /* الكروت */
+        .card { background: #230810; border-radius: 15px; padding: 20px; width: 100%; max-width: 450px; margin-bottom: 20px; border: 1px solid #4a1524; box-sizing: border-box; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #4a1524; padding-bottom: 10px; margin-bottom: 15px; }
         .card-title { color: var(--gold); font-size: 1rem; margin: 0; font-weight: bold;}
         .card-text { font-size: 1.05rem; line-height: 1.8; color: var(--text-main); text-align: right; }
 
         .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .photo-grid img { width: 100%; height: 160px; object-fit: cover; border-radius: 8px; border: 1px solid #4a1524; }
 
-        .seal-btn {
-            background: #1a060a; border: 1px solid #4a1524; border-radius: 15px; margin-top: 10px;
-            padding: 25px; cursor: pointer; display: flex; flex-direction: column; align-items: center;
-        }
-        .seal-circle {
-            width: 70px; height: 70px; background: linear-gradient(135deg, #ff4d79, #d6335a);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 2rem; box-shadow: 0 0 20px rgba(214, 51, 90, 0.5); margin-bottom: 15px;
-            animation: pulseCircle 2s infinite; color: white;
-        }
-        @keyframes pulseCircle { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        .seal-btn { background: #1a060a; border: 1px solid #4a1524; border-radius: 15px; margin-top: 10px; padding: 25px; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
+        .seal-circle { width: 70px; height: 70px; background: linear-gradient(135deg, #ff4d79, #d6335a); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin-bottom: 15px; color: white; }
         .seal-text { color: var(--gold); font-weight: bold; font-size: 0.95rem; }
 
-        /* -------------------------------------
-           4. نافذة الرسالة الطويلة (Modal)
-           ------------------------------------- */
-        #message-modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10, 2, 4, 0.95); z-index: 100;
-            display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;
-        }
-        .msg-box {
-            background: #230810; padding: 30px 20px; border-radius: 20px;
-            border: 1px solid #d6335a; max-height: 85vh; overflow-y: auto; width: 100%; max-width: 400px;
-        }
+        /* 4. نافذة الرسالة الطويلة */
+        #message-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 2, 4, 0.95); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
+        .msg-box { background: #230810; padding: 30px 20px; border-radius: 20px; border: 1px solid #d6335a; max-height: 85vh; overflow-y: auto; width: 100%; max-width: 400px; }
         .msg-box h2 { color: var(--gold); margin-top: 0; text-align: center; border-bottom: 1px solid #4a1524; padding-bottom: 15px;}
         .msg-box p { font-size: 1.15rem; line-height: 1.9; color: white; text-align: right; }
-        .close-btn {
-            background: #d6335a; color: white; border: none; padding: 12px;
-            width: 100%; border-radius: 10px; font-size: 1.1rem; font-weight: bold; margin-top: 20px; cursor: pointer;
-        }
-
+        .close-btn { background: #d6335a; color: white; border: none; padding: 12px; width: 100%; border-radius: 10px; font-size: 1.1rem; font-weight: bold; margin-top: 20px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -196,7 +115,7 @@
 
     <div class="floating-hearts" id="hearts-container"></div>
 
-    <div id="lock-screen" class="screen fade-in">
+    <div id="lock-screen" class="screen">
         <div class="lock-container">
             <div class="lock-icon">🔒</div>
             <div class="lock-badge">مغلق بالحب</div>
@@ -208,21 +127,19 @@
         </div>
     </div>
 
-    <div id="loading-screen" class="screen hidden">
+    <div id="loading-screen" class="screen" style="display: none;">
         <div class="cake-icon">🎂</div>
         <h2 class="loading-title">عيد ميلاد سعيد</h2>
         <h1 class="loading-name">RAWAN</h1>
         <div class="loading-subtitle">تتفتح لك بوابات الحب الآن لمشاهدة تهنئتك الخاصة.. ❤️</div>
         
-        <div class="progress-bar-bg">
-            <div class="progress-fill" id="loading-fill"></div>
-        </div>
+        <div class="progress-bar-bg"><div class="progress-fill" id="loading-fill"></div></div>
         <div class="progress-text" id="loading-text">0%</div>
     </div>
 
-    <div id="main-screen" class="hidden">
+    <div id="main-screen" style="display: none;">
         
-        <div class="hero-card fade-in">
+        <div class="hero-card">
             <div class="notification-bar" id="notif-bar">
                 <span class="close-notif" onclick="hideNotif()">✖</span>
                 <span>أرسلت نبضة مودة ودفء رومانسي إلى روان! ❤️</span>
@@ -236,12 +153,7 @@
             <div class="quote-box">
                 "عامك الجديد وعمري ما يكملوش غير بنور عينيكي و ضحكة قلبك الصافية"
             </div>
-            <button class="pulse-btn" onclick="showNotif()">
-                أرسل نبضة حب 💖
-            </button>
-            <div style="text-align: center; font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-top: 15px;">
-                احتفالاً بيوم ميلادك المميز 💖
-            </div>
+            <button class="pulse-btn" onclick="showNotif()">أرسل نبضة حب 💖</button>
 
             <div class="circle-photo-container">
                 <div class="circle-photo">
@@ -251,7 +163,7 @@
             </div>
         </div>
 
-        <div class="card fade-in" style="animation-delay: 0.2s;">
+        <div class="card">
             <div class="card-header">
                 <h3 class="card-title">A PERSONAL WISH • أمنية خاصة</h3>
                 <span style="font-size: 1.2rem;">💌</span>
@@ -261,14 +173,11 @@
             </p>
         </div>
 
-        <div class="card fade-in" style="animation-delay: 0.4s;">
+        <div class="card">
             <div class="card-header">
                 <h3 class="card-title">ALBUM OF MEMORIES • ألبوم الذكريات</h3>
                 <span style="font-size: 1.2rem;">📸</span>
             </div>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px; text-align: right;">
-                صور محفورة في القلب، ولحظات لا تُنسى بتفاصيلها الجميلة..
-            </p>
             <div class="photo-grid">
                 <img src="photo2.jpg" alt="صورة 2">
                 <img src="photo3.jpg" alt="صورة 3">
@@ -277,7 +186,7 @@
             </div>
         </div>
 
-        <div class="card fade-in" style="animation-delay: 0.6s; text-align: center;">
+        <div class="card" style="text-align: center;">
             <h3 style="color: var(--text-main); margin-top: 0; font-size: 1.2rem;">رسالة حب سرية مخصصة لروان 💕</h3>
             <p style="color: var(--text-muted); font-size: 0.9rem;">اضغطي على الختم في المنتصف لفتح الرسالة الخاصة</p>
             <div class="seal-btn" onclick="openMessage()">
@@ -288,15 +197,13 @@
 
     </div>
 
-    <div id="message-modal" class="hidden fade-in">
+    <div id="message-modal" style="display: none;">
         <div class="msg-box">
             <h2>رسالة حب سرية 💌</h2>
             <p>
                 عيد ميلاد أحلى وأجمل وأطيب حد في الدنيا كلها..
                 <br><br>
                 كل سنة وأنتِ طيبة يا حبيبتي، كل سنة وأنتِ معايا ومحليا أيامي، يا نور عيني ويا مهجة قلبي ويا فرحة عمري. 
-                <br><br>
-                كل سنة وأنتِ حبيبتي وروحي، وربنا يخليكي ليا وميحرمنيش منك أبداً يا حبيبة عيني.
                 <br><br>
                 بحبــــــك جداً جداً جداً ❤️
             </p>
@@ -305,7 +212,7 @@
     </div>
 
     <script>
-        // قلوب الخلفية
+        // القلوب
         const heartsContainer = document.getElementById('hearts-container');
         const heartIcons = ['❤️', '🤍', '✨'];
         for(let i = 0; i < 20; i++) {
@@ -319,62 +226,58 @@
             heartsContainer.appendChild(heart);
         }
 
-        // فحص الباسورد + تشغيل المزيكا (بطريقة آمنة مليون المية)
+        // دالة الفحص (بتخفي الشاشة فوراً)
         function checkPass() {
-            let pass = document.getElementById('pass-input').value.trim();
+            var passValue = document.getElementById('pass-input').value.toLowerCase();
             
-            // بيقبل أي حاجة فيها 31 أو حرف R
-            if (pass.includes("31") || pass.includes("٣١") || pass.toLowerCase().includes("r")) {
+            if (passValue.indexOf('31') !== -1 || passValue.indexOf('٣١') !== -1 || passValue.indexOf('r') !== -1) {
+                // إخفاء القفل وإظهار التحميل فوراً
+                document.getElementById('lock-screen').style.display = 'none';
+                document.getElementById('loading-screen').style.display = 'flex';
                 
-                document.getElementById('error-text').style.display = 'none';
-                document.getElementById('lock-screen').classList.add('fade-out');
+                // محاولة تشغيل الصوت
+                try { document.getElementById('bgMusic').play(); } catch(e) {}
                 
-                // 1. ننقلك للشاشة اللي بعدها فوراً وبدون أي تعطيل
-                setTimeout(() => {
-                    document.getElementById('lock-screen').classList.add('hidden');
-                    startLoading();
-                }, 400);
-
-                // 2. نحاول نشغل المزيكا (لو فيها مشكلة، الموقع مش هيقف وهيكمل عادي)
-                setTimeout(() => {
-                    try {
-                        const bgMusic = document.getElementById('bgMusic');
-                        const musicBtn = document.getElementById('musicBtnToggle');
-                        if (bgMusic) {
-                            let playPromise = bgMusic.play();
-                            if (playPromise !== undefined) {
-                                playPromise.then(() => {
-                                    if (musicBtn) musicBtn.classList.add('playing');
-                                }).catch(err => console.log("المتصفح هيحتاج تشغيل المزيكا يدوياً من الزرار الداخلي"));
-                            }
-                        }
-                    } catch(e) { 
-                        console.log("ملف الصوت غير موجود، بس الموقع هيكمل عادي"); 
-                    }
-                }, 500);
-
+                startLoading();
             } else {
                 document.getElementById('error-text').style.display = 'block';
             }
         }
 
-        // التحميل
+        // شريط التحميل
         function startLoading() {
-            let loadScreen = document.getElementById('loading-screen');
-            loadScreen.classList.remove('hidden');
+            var progress = 0;
+            var bar = document.getElementById('loading-fill');
+            var text = document.getElementById('loading-text');
             
-            let progress = 0;
-            let bar = document.getElementById('loading-fill');
-            let text = document.getElementById('loading-text');
-            
-            let interval = setInterval(() => {
-                progress += Math.floor(Math.random() * 10) + 2; 
+            var interval = setInterval(function() {
+                progress += 10; 
                 if (progress >= 100) {
                     progress = 100;
                     clearInterval(interval);
-                    setTimeout(() => {
-                        loadScreen.classList.add('fade-out');
-                        setTimeout(() => {
-                            loadScreen.classList.add('hidden');
-                            document.getElementById('main-screen').classList.remove('hidden');
-                            try { confetti({ partic
+                    // إخفاء التحميل وإظهار الموقع
+                    document.getElementById('loading-screen').style.display = 'none';
+                    document.getElementById('main-screen').style.display = 'flex';
+                    try { confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } }); } catch(e){}
+                }
+                bar.style.width = progress + '%';
+                text.innerText = progress + '%';
+            }, 250); 
+        }
+
+        function toggleMusic() {
+            var audio = document.getElementById('bgMusic');
+            if(audio.paused) { audio.play(); } else { audio.pause(); }
+        }
+
+        function showNotif() {
+            document.getElementById('notif-bar').style.display = 'flex';
+            try { confetti({ particleCount: 30, spread: 50, origin: { y: 0.4 } }); } catch(e){}
+        }
+        function hideNotif() { document.getElementById('notif-bar').style.display = 'none'; }
+
+        function openMessage() { document.getElementById('message-modal').style.display = 'flex'; }
+        function closeMessage() { document.getElementById('message-modal').style.display = 'none'; }
+    </script>
+</body>
+</html>
