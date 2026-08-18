@@ -31,6 +31,11 @@
         .fade-in { animation: fadeIn 0.8s ease-in; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* القلوب الطايرة */
+        .floating-hearts { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+        .heart { position: absolute; color: rgba(214, 51, 90, 0.2); animation: floatUp linear infinite; bottom: -50px; }
+        @keyframes floatUp { 0% { transform: translateY(0) scale(0.8); opacity: 1; } 100% { transform: translateY(-100vh) scale(1.2); opacity: 0; } }
+
         /* الشاشات الأساسية */
         .screen {
             min-height: 100vh; width: 100%; display: flex; flex-direction: column;
@@ -52,26 +57,23 @@
         .progress-bar-bg { background: white; border-radius: 10px; height: 12px; width: 70%; overflow: hidden; margin-bottom: 10px; border: 1px solid var(--secondary-pink); }
         .progress-fill { background: var(--primary-pink); height: 100%; width: 0%; transition: width 0.2s; }
 
-        /* 3. شاشة إجبار تشغيل الصوت */
-        .audio-lock-box { background: var(--card-bg); padding: 30px 20px; border-radius: 25px; text-align: center; width: 85%; max-width: 380px; box-shadow: 0 10px 30px rgba(255,77,121,0.2); border: 2px solid white;}
-        .audio-lock-box h2 { color: var(--primary-pink); margin-top: 0; }
-        .audio-lock-box p { color: var(--text-light); font-size: 1rem; margin-bottom: 20px; font-weight: bold;}
-        
-        /* شكل مشغل الصوت العادي */
-        audio { width: 100%; border-radius: 50px; outline: none; }
-        
         /* 4. الصفحة الرئيسية */
         #main-screen { position: relative; z-index: 5; padding: 20px 10px 80px 10px; display: flex; flex-direction: column; align-items: center; width: 100%; box-sizing: border-box;}
         
-        /* شريط الصوت الثابت فوق بعد ما يفتح */
-        .sticky-audio { position: sticky; top: 10px; width: 95%; max-width: 450px; background: rgba(255,255,255,0.9); padding: 10px; border-radius: 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 100; margin-bottom: 20px; border: 2px solid var(--secondary-pink); display: flex; justify-content: center; box-sizing: border-box;}
-        .sticky-audio audio { width: 100%; height: 40px; }
-
         /* الكروت */
         .card { background: var(--card-bg); border-radius: 20px; padding: 25px 20px; width: 95%; max-width: 450px; margin-bottom: 25px; border: 2px solid white; box-shadow: 0 8px 25px rgba(255, 77, 121, 0.15); box-sizing: border-box; backdrop-filter: blur(10px); }
         .card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px dashed var(--secondary-pink); padding-bottom: 10px; margin-bottom: 20px; }
         .card-title { color: var(--primary-pink); font-size: 1.3rem; margin: 0; font-weight: bold; }
         
+        /* تصميم الكارت الأول (الافتتاحية الثابتة) */
+        .name-title { font-family: 'Playfair Display', serif; font-size: 3.5rem; text-align: center; margin: 0; background: linear-gradient(180deg, var(--primary-pink) 0%, var(--secondary-pink) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-style: italic; }
+        .date-badge { background: var(--primary-pink); color: white; padding: 5px 20px; border-radius: 20px; display: inline-block; margin-top: 10px; font-weight: bold; }
+        .quote-box { background-color: white; border-radius: 15px; padding: 20px; text-align: center; color: var(--text-dark); font-family: 'Amiri', serif; font-size: 1.3rem; font-style: italic; font-weight: bold; line-height: 1.8; margin-top: 25px; border: 1px dashed var(--secondary-pink); box-shadow: inset 0 0 10px rgba(255, 77, 121, 0.1); }
+        
+        /* إشعار النبضة */
+        .notification-bar { background: white; border: 2px solid var(--primary-pink); border-radius: 12px; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; color: var(--text-dark); margin-bottom: 20px; font-weight: bold; display: none; }
+        .close-notif { color: var(--primary-pink); cursor: pointer; font-weight: bold; font-size: 1.2rem;}
+
         /* نصوص الكتابة الآلية */
         .typewriter-text { font-size: 1.15rem; line-height: 1.8; color: var(--text-dark); text-align: right; display: none; min-height: 50px; font-weight: 600;}
         
@@ -79,11 +81,22 @@
         .show-msg-btn { background: white; color: var(--primary-pink); border: 2px solid var(--primary-pink); padding: 10px 20px; border-radius: 50px; font-size: 1rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px;}
         .show-msg-btn:hover { background: var(--primary-pink); color: white; }
 
-        /* ألبوم الصور والفيديوهات */
-        .media-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .media-grid img, .video-box video { width: 100%; border-radius: 12px; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); object-fit: cover;}
-        .media-grid img { height: 160px; }
+        /* =========================================
+           تصميم ألبوم الحبل والصور المتعلقة
+           ========================================= */
+        .rope-album-container { display: flex; flex-direction: column; gap: 15px; margin-top: 10px; }
+        .rope-row { position: relative; display: flex; justify-content: space-around; padding-top: 10px; }
+        .rope-line { position: absolute; top: 0; left: -10px; right: -10px; height: 3px; background: repeating-linear-gradient(45deg, var(--gold), var(--gold) 5px, #b58b22 5px, #b58b22 10px); border-radius: 2px; z-index: 1; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .photo-hanging { position: relative; width: 30%; z-index: 2; animation: swing 3s ease-in-out infinite alternate; transform-origin: top center; }
+        .photo-hanging:nth-child(2) { animation-delay: 0.5s; }
+        .photo-hanging:nth-child(3) { animation-delay: 1.2s; }
+        .clip { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); width: 8px; height: 18px; background-color: var(--primary-pink); border: 2px solid white; border-radius: 4px; z-index: 3; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .photo-hanging img { width: 100%; height: 110px; object-fit: cover; border-radius: 8px; border: 3px solid white; box-shadow: 0 5px 15px rgba(255, 77, 121, 0.2); transition: opacity 0.5s ease-in-out; }
+        @keyframes swing { 0% { transform: rotate(3deg); } 100% { transform: rotate(-3deg); } }
+
+        /* الفيديوهات */
         .video-box { width: 100%; margin-top: 15px; }
+        .video-box video { width: 100%; border-radius: 12px; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); object-fit: cover;}
 
         /* زرار الرسالة السرية (الختم) */
         .seal-btn { background: transparent; border: 2px dashed var(--primary-pink); border-radius: 20px; padding: 20px; cursor: pointer; text-align: center; }
@@ -116,26 +129,15 @@
         <div style="color: var(--primary-pink); font-weight: bold; font-size: 1.2rem;" id="loading-text">0%</div>
     </div>
 
-    <div id="audio-lock-screen" class="screen hidden">
-        <div class="audio-lock-box fade-in">
-            <h2>خطوة أخيرة! 🎧</h2>
-            <p>علشان المفاجأة تكمل، اضغطي على زرار التشغيل للمقطع الصوتي الأول.. والموقع هيفتح لوحده بعدها 💖</p>
-            <audio id="main-audio" controls controlsList="nodownload">
-                <source src="موسيقى.mp3" type="audio/mpeg">
-                متصفحك لا يدعم تشغيل الصوت.
-            </audio>
-        </div>
-    </div>
-
     <div id="main-screen" class="hidden">
         
-        <div class="sticky-audio fade-in">
-            <audio id="sticky-audio-player" controls loop controlsList="nodownload">
-                <source src="موسيقى.mp3" type="audio/mpeg">
-            </audio>
-        </div>
-
         <div class="card fade-in">
+            <div class="notification-bar" id="notif-bar">
+                <span class="close-notif" onclick="hideNotif()">✖</span>
+                <span>أرسلت نبضة مودة ودفء رومانسي إلى روان! ❤️</span>
+                <span style="font-size: 1.2rem;">🌌</span>
+            </div>
+
             <div style="text-align: center; margin-bottom: 20px;">
                 <h1 style="margin: 0; color: var(--primary-pink); font-family: 'Playfair Display', serif; font-size: 3rem;">Rawan</h1>
                 <div style="background: var(--primary-pink); color: white; padding: 5px 20px; border-radius: 20px; display: inline-block; margin-top: 10px; font-weight: bold;">🎂 200X • 08 • 31 🎀</div>
@@ -158,11 +160,21 @@
                 <h3 class="card-title">ألبوم الذكريات 📸</h3>
             </div>
             <p style="font-size: 0.9rem; color: var(--text-light); text-align: right; margin-bottom: 15px;">ذكرياتنا الحلوة اللي محفورة في القلب..</p>
-            <div class="media-grid">
-                <img src="photo1.jpg" alt="صورة 1">
-                <img src="photo2.jpg" alt="صورة 2">
-                <img src="photo3.jpg" alt="صورة 3">
-                <img src="photo4.jpg" alt="صورة 4">
+            <div class="rope-album-container">
+                <!-- الصف الأول (حبل عليه 3 صور) -->
+                <div class="rope-row">
+                    <div class="rope-line"></div>
+                    <div class="photo-hanging"><div class="clip"></div><img id="album-img-0" src="photo1.jpg" alt="صورة"></div>
+                    <div class="photo-hanging"><div class="clip"></div><img id="album-img-1" src="photo2.jpg" alt="صورة"></div>
+                    <div class="photo-hanging"><div class="clip"></div><img id="album-img-2" src="photo3.jpg" alt="صورة"></div>
+                </div>
+                <!-- الصف التاني (حبل عليه 3 صور) -->
+                <div class="rope-row" style="margin-top: 15px;">
+                    <div class="rope-line"></div>
+                    <div class="photo-hanging"><div class="clip"></div><img id="album-img-3" src="photo4.jpg" alt="صورة"></div>
+                    <div class="photo-hanging"><div class="clip"></div><img id="album-img-4" src="photo5.jpg" alt="صورة"></div>
+                    <div class="photo-hanging"><div class="clip"></div><img id="album-img-5" src="photo6.jpg" alt="صورة"></div>
+                </div>
             </div>
         </div>
 
@@ -179,7 +191,7 @@
                 </video>
             </div>
             
-            </div>
+        </div>
 
         <div class="card fade-in" style="text-align: center;">
             <h3 style="color: var(--text-dark); margin-top: 0; font-size: 1.2rem;">رسالة حب سرية مخصصة لروان 💕</h3>
@@ -217,7 +229,7 @@
             }
         }
 
-        // 2. التحميل
+        // 2. التحميل والانتقال للموقع مباشرة (بدون شاشة الصوت)
         function startLoading() {
             var progress = 0;
             var bar = document.getElementById('loading-fill');
@@ -228,52 +240,28 @@
                 if (progress >= 100) {
                     progress = 100;
                     clearInterval(interval);
-                    // بعد التحميل نوديها لشاشة إجبار تشغيل الصوت
+                    // فتح الموقع مباشرة
                     document.getElementById('loading-screen').style.display = 'none';
-                    document.getElementById('audio-lock-screen').style.display = 'flex';
+                    document.getElementById('main-screen').style.display = 'flex';
+                    
+                    // تشغيل البلالين وتقليب الصور
+                    startConfettiShower();
+                    setInterval(rotateAlbumPhotos, 5000);
                 }
                 bar.style.width = progress + '%';
                 text.innerText = progress + '%';
             }, 250); 
         }
 
-        // 3. برمجة إجبار تشغيل الصوت 
-        var mainAudio = document.getElementById('main-audio');
-        var stickyAudio = document.getElementById('sticky-audio-player');
-        var isUnlocked = false;
-
-        // أول ما تدوس Play على الملف في شاشة الإجبار
-        mainAudio.addEventListener('play', function() {
-            if (!isUnlocked) {
-                isUnlocked = true;
-                
-                // نقفل شاشة الإجبار ونفتح الموقع
-                document.getElementById('audio-lock-screen').style.display = 'none';
-                document.getElementById('main-screen').style.display = 'flex';
-                
-                // نشغل شلال البلالين والورق الملون
-                startConfettiShower();
-                
-                // نوقف المشغل المؤقت ونشغل المشغل الأساسي اللي هيكمل معاها
-                mainAudio.pause();
-                stickyAudio.currentTime = mainAudio.currentTime; // عشان يكمل من نفس الثانية
-                stickyAudio.play();
-            }
-        });
-
-        // 4. دالة الكتابة الآلية (Typewriter Effect)
+        // 3. دالة الكتابة الآلية (Typewriter Effect)
         function typeWriter(textElementId, textContent, btnId) {
-            // نخفي زرار العرض
-            document.getElementById(btnId).style.display = 'none';
-            
+            document.getElementById(btnId).style.display = 'none'; 
             var el = document.getElementById(textElementId);
-            el.style.display = 'block'; // نظهر البراجراف
-            el.innerHTML = ''; // نفضيه الأول
+            el.style.display = 'block'; 
+            el.innerHTML = ''; 
             
             var i = 0;
-            // عشان لو في سطر جديد \n يحوله لـ <br>
             var formattedText = textContent.replace(/\n/g, "<br>");
-            // هنستخدم طريقة ذكية لكتابة الـ HTML تاج زي ما هو
             var tempDiv = document.createElement('div');
             tempDiv.innerHTML = formattedText;
             var finalString = tempDiv.innerHTML;
@@ -290,52 +278,46 @@
                     el.innerHTML = currentText;
                     i++;
                     
-                    // لو بيكتب جوه تاج (زي <br>) يخلص بسرعة وميستناش
                     if(isTag) {
                         type();
                     } else {
-                        setTimeout(type, 40); // سرعة الكتابة
+                        setTimeout(type, 40); 
                     }
                 }
             }
             type();
         }
 
-        // 5. شلال الورق الملون والبلالين (ينزل من فوق ويستمر شوية)
-        function startConfettiShower() {
-            var duration = 5 * 1000; // 5 ثواني
-            var animationEnd = Date.now() + duration;
-            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
+        // 4. نظام تقليب الصور الآلي على الحبل
+        const albumPhotos = [
+            "photo1.jpg", "photo2.jpg", "photo3.jpg", "photo4.jpg", "photo5.jpg", "photo6.jpg",
+            "photo7.jpg", "photo8.jpg", "photo9.jpg", "photo10.jpg", "photo11.jpg", "photo12.jpg",
+            "photo13.jpg", "photo14.jpg", "photo15.jpg", "photo16.jpg", "photo17.jpg", "photo18.jpg",
+            "photo19.jpg", "photo20.jpg", "photo21.jpg"
+        ];
+        let currentPhotoIndex = 0;
 
-            function randomInRange(min, max) {
-                return Math.random() * (max - min) + min;
+        function rotateAlbumPhotos() {
+            if (albumPhotos.length <= 6) return;
+            for (let i = 0; i < 6; i++) {
+                let imgElement = document.getElementById('album-img-' + i);
+                if(imgElement) imgElement.style.opacity = 0;
             }
-
-            var interval = setInterval(function() {
-                var timeLeft = animationEnd - Date.now();
-
-                if (timeLeft <= 0) {
-                    return clearInterval(interval);
+            setTimeout(() => {
+                for (let i = 0; i < 6; i++) {
+                    let imgElement = document.getElementById('album-img-' + i);
+                    if(imgElement) {
+                        let newIndex = (currentPhotoIndex + i) % albumPhotos.length;
+                        imgElement.src = albumPhotos[newIndex];
+                        imgElement.style.opacity = 1;
+                    }
                 }
-
-                var particleCount = 50 * (timeLeft / duration);
-                
-                // ينزل من فوق من أماكن عشوائية عرضياً
-                confetti(Object.assign({}, defaults, { 
-                    particleCount, 
-                    origin: { x: randomInRange(0.1, 0.9), y: Math.random() - 0.2 },
-                    colors: ['#ff4d79', '#ff7eb3', '#d4af37', '#ffffff'] // ألوان بناتي
-                }));
-            }, 250);
+                currentPhotoIndex = (currentPhotoIndex + 6) % albumPhotos.length;
+            }, 500);
         }
 
-        // 6. فتح وقفل الرسالة الختامية
-        function openMessage() { 
-            document.getElementById('message-modal').style.display = 'flex'; 
-        }
-        function closeMessage() { 
-            document.getElementById('message-modal').style.display = 'none'; 
-        }
-    </script>
-</body>
-</html>
+        // 5. شلال الورق الملون والبلالين 
+        function startConfettiShower() {
+            var duration = 5 * 1000; 
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity:
