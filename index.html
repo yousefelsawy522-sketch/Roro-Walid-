@@ -4,273 +4,220 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>مفاجأة روان</title>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital@1&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital@1&family=Cairo:wght@600;700&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
+        /* =========================================
+           الألوان بناتي وعيد ميلاد (Pink & Pastel)
+           ========================================= */
         :root {
-            --bg-main: #140508; 
-            --card-bg-top: #3a0d18; 
-            --card-bg-bottom: #1a050a; 
-            --gold: #d4af37; 
-            --gold-light: #fbe29f;
-            --pink-btn: linear-gradient(90deg, #ff4b69, #ff7eb3);
-            --quote-bg: #fcf6eb; 
-            --text-main: #ffffff;
-            --text-muted: #c9a6ad;
+            --bg-gradient: linear-gradient(135deg, #ffe6ea 0%, #ffb3c6 100%);
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --primary-pink: #ff4d79;
+            --secondary-pink: #ff7eb3;
+            --text-dark: #5c2a38;
+            --text-light: #8e5565;
+            --gold: #d4af37;
         }
 
         body {
-            margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif;
-            background-color: var(--bg-main); color: var(--text-main);
+            margin: 0; padding: 0; font-family: 'Cairo', sans-serif;
+            background: var(--bg-gradient); color: var(--text-dark);
             overflow-x: hidden; width: 100%; min-height: 100vh;
-            background-image: radial-gradient(circle at center, #2a0810 0%, #140508 100%);
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* كلاس الإخفاء الإجباري */
         .hidden { display: none !important; }
+        .fade-in { animation: fadeIn 0.8s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* القلوب الطايرة في الخلفية */
-        .floating-hearts { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
-        .heart { position: absolute; color: rgba(214, 51, 90, 0.2); animation: floatUp linear infinite; bottom: -50px; }
-        @keyframes floatUp { 0% { transform: translateY(0) scale(0.8); opacity: 1; } 100% { transform: translateY(-100vh) scale(1.2); opacity: 0; } }
-
-        /* تصميم الشاشات المشترك */
+        /* الشاشات الأساسية */
         .screen {
             min-height: 100vh; width: 100%; display: flex; flex-direction: column;
             align-items: center; justify-content: center; position: fixed;
-            top: 0; left: 0; z-index: 10; background-color: var(--bg-main);
+            top: 0; left: 0; z-index: 10; background: var(--bg-gradient);
         }
-
-        /* أزرار عامة */
-        .primary-btn { background: var(--pink-btn); color: white; border: none; padding: 15px 30px; border-radius: 50px; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 85%; max-width: 300px; box-shadow: 0 4px 15px rgba(214, 51, 90, 0.4); }
-
-        /* 0. شاشة الترحيب (لإجبار تشغيل الموسيقى) */
-        .welcome-box { text-align: center; z-index: 2; padding: 30px; background: rgba(0,0,0,0.5); border: 1px solid var(--gold); border-radius: 20px; width: 85%; max-width: 350px;}
 
         /* 1. شاشة القفل */
-        .lock-container { text-align: center; width: 90%; max-width: 400px; z-index: 2; }
-        .lock-icon { font-size: 4rem; color: var(--gold); margin-bottom: 10px;}
-        .lock-badge { background-color: #6a1024; color: var(--text-main); padding: 5px 20px; border-radius: 20px; font-size: 0.9rem; display: inline-block; margin-bottom: 25px; border: 1px solid #d6335a; }
-        .lock-text { color: var(--gold); font-size: 1.1rem; margin-bottom: 20px; }
-        .lock-input { width: 85%; padding: 15px; background: #3b0b18; border: 1px solid #d6335a; color: white; text-align: center; border-radius: 12px; font-size: 1.2rem; margin-bottom: 20px; outline: none; }
+        .lock-box { background: var(--card-bg); padding: 40px 20px; border-radius: 30px; box-shadow: 0 10px 30px rgba(255, 77, 121, 0.2); width: 85%; max-width: 350px; text-align: center; border: 2px solid white; }
+        .lock-icon { font-size: 4rem; margin-bottom: 15px; }
+        .lock-text { color: var(--primary-pink); font-size: 1.2rem; margin-bottom: 20px; font-weight: bold; }
+        .lock-input { width: 90%; padding: 15px; background: white; border: 2px solid var(--secondary-pink); color: var(--text-dark); text-align: center; border-radius: 15px; font-size: 1.2rem; margin-bottom: 20px; outline: none; box-sizing: border-box; }
+        .pink-btn { background: linear-gradient(45deg, var(--primary-pink), var(--secondary-pink)); color: white; border: none; padding: 15px 30px; border-radius: 50px; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; box-shadow: 0 5px 15px rgba(255, 77, 121, 0.4); transition: 0.3s; }
         
         /* 2. شاشة التحميل */
-        .cake-icon { font-size: 5rem; margin-bottom: 15px; }
-        .loading-title { color: var(--gold); font-size: 1.2rem; margin: 0 0 5px 0; }
-        .loading-name { color: #5bc0eb; font-size: 3rem; margin: 0 0 20px 0; font-weight: bold; letter-spacing: 2px; }
-        .loading-subtitle { color: #a88890; font-size: 0.9rem; text-align: center; width: 80%; margin-bottom: 20px;}
-        .progress-bar-bg { background: #3b0b18; border-radius: 10px; height: 10px; width: 70%; overflow: hidden; margin-bottom: 10px; }
-        .progress-fill { background: #d6335a; height: 100%; width: 0%; transition: width 0.2s; }
-        .progress-text { color: var(--gold); font-weight: bold; font-size: 1.2rem; }
+        .cake-icon { font-size: 6rem; margin-bottom: 10px; animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .loading-name { color: var(--primary-pink); font-size: 3rem; margin: 0 0 20px 0; font-family: 'Playfair Display', serif; }
+        .progress-bar-bg { background: white; border-radius: 10px; height: 12px; width: 70%; overflow: hidden; margin-bottom: 10px; border: 1px solid var(--secondary-pink); }
+        .progress-fill { background: var(--primary-pink); height: 100%; width: 0%; transition: width 0.2s; }
 
-        /* 3. الصفحة الرئيسية */
+        /* 3. شاشة إجبار تشغيل الصوت */
+        .audio-lock-box { background: var(--card-bg); padding: 30px 20px; border-radius: 25px; text-align: center; width: 85%; max-width: 380px; box-shadow: 0 10px 30px rgba(255,77,121,0.2); border: 2px solid white;}
+        .audio-lock-box h2 { color: var(--primary-pink); margin-top: 0; }
+        .audio-lock-box p { color: var(--text-light); font-size: 1rem; margin-bottom: 20px; font-weight: bold;}
+        
+        /* شكل مشغل الصوت العادي */
+        audio { width: 100%; border-radius: 50px; outline: none; }
+        
+        /* 4. الصفحة الرئيسية */
         #main-screen { position: relative; z-index: 5; padding: 20px 10px 80px 10px; display: flex; flex-direction: column; align-items: center; width: 100%; box-sizing: border-box;}
         
-        .hero-card {
-            background: linear-gradient(180deg, var(--card-bg-top) 0%, var(--card-bg-bottom) 100%);
-            width: 100%; max-width: 450px; border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 25px; padding: 20px; box-sizing: border-box;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6); position: relative; margin-bottom: 40px;
-        }
-
-        .notification-bar {
-            background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(212, 175, 55, 0.4);
-            border-radius: 12px; padding: 10px 15px; display: flex; justify-content: space-between;
-            align-items: center; font-size: 0.8rem; color: #ddd; margin-bottom: 20px; display: none;
-        }
-        .close-notif { color: var(--gold); cursor: pointer; font-weight: bold; font-size: 1.2rem;}
-
-        .name-title { font-family: 'Playfair Display', serif; font-size: 3.5rem; text-align: center; margin: 0; background: linear-gradient(180deg, #ffffff 0%, #ffc1cc 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-style: italic; }
-        .date-badge-container { text-align: center; margin: 15px 0 25px 0; }
-        .date-badge { background: rgba(0,0,0,0.3); border: 1px solid rgba(212, 175, 55, 0.5); border-radius: 20px; padding: 5px 20px; display: inline-block; font-size: 0.9rem; color: var(--gold-light); letter-spacing: 2px; }
-
-        .quote-box { background-color: var(--quote-bg); border-radius: 20px; padding: 25px 20px; text-align: center; color: #333; font-family: 'Amiri', serif; font-size: 1.2rem; font-style: italic; font-weight: bold; line-height: 1.8; margin-bottom: 30px; border: 1px solid #eaddcf; }
-
-        .pulse-btn { background: var(--pink-btn); color: white; border: 2px solid rgba(255, 255, 255, 0.5); border-radius: 50px; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; }
-        
-        .circle-photo-container { position: relative; display: flex; justify-content: center; margin-top: 30px; width: 100%; }
-        .circle-photo { width: 200px; height: 200px; border-radius: 50%; border: 3px solid var(--gold); padding: 5px; box-sizing: border-box; }
-        .circle-photo img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-        
-        .music-btn { position: absolute; bottom: 10px; right: 10%; width: 45px; height: 45px; border-radius: 50%; border: 1px solid var(--gold); display: flex; justify-content: center; align-items: center; color: var(--gold); font-size: 1.2rem; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); cursor: pointer; }
-        .music-btn.playing { color: #ff4b69; border-color: #ff4b69; }
+        /* شريط الصوت الثابت فوق بعد ما يفتح */
+        .sticky-audio { position: sticky; top: 10px; width: 95%; max-width: 450px; background: rgba(255,255,255,0.9); padding: 10px; border-radius: 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 100; margin-bottom: 20px; border: 2px solid var(--secondary-pink); display: flex; justify-content: center; box-sizing: border-box;}
+        .sticky-audio audio { width: 100%; height: 40px; }
 
         /* الكروت */
-        .card { background: #230810; border-radius: 15px; padding: 20px; width: 100%; max-width: 450px; margin-bottom: 20px; border: 1px solid #4a1524; box-sizing: border-box; }
-        .card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #4a1524; padding-bottom: 10px; margin-bottom: 15px; }
-        .card-title { color: var(--gold); font-size: 1rem; margin: 0; font-weight: bold;}
-        .card-text { font-size: 1.05rem; line-height: 1.8; color: var(--text-main); text-align: right; }
+        .card { background: var(--card-bg); border-radius: 20px; padding: 25px 20px; width: 95%; max-width: 450px; margin-bottom: 25px; border: 2px solid white; box-shadow: 0 8px 25px rgba(255, 77, 121, 0.15); box-sizing: border-box; backdrop-filter: blur(10px); }
+        .card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px dashed var(--secondary-pink); padding-bottom: 10px; margin-bottom: 20px; }
+        .card-title { color: var(--primary-pink); font-size: 1.3rem; margin: 0; font-weight: bold; }
+        
+        /* نصوص الكتابة الآلية */
+        .typewriter-text { font-size: 1.15rem; line-height: 1.8; color: var(--text-dark); text-align: right; display: none; min-height: 50px; font-weight: 600;}
+        
+        /* زرار عرض الرسالة */
+        .show-msg-btn { background: white; color: var(--primary-pink); border: 2px solid var(--primary-pink); padding: 10px 20px; border-radius: 50px; font-size: 1rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px;}
+        .show-msg-btn:hover { background: var(--primary-pink); color: white; }
 
-        .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .photo-grid img { width: 100%; height: 160px; object-fit: cover; border-radius: 8px; border: 1px solid #4a1524; }
+        /* ألبوم الصور والفيديوهات */
+        .media-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .media-grid img, .video-box video { width: 100%; border-radius: 12px; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); object-fit: cover;}
+        .media-grid img { height: 160px; }
+        .video-box { width: 100%; margin-top: 15px; }
 
-        .seal-btn { background: #1a060a; border: 1px solid #4a1524; border-radius: 15px; margin-top: 10px; padding: 25px; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
-        .seal-circle { width: 70px; height: 70px; background: linear-gradient(135deg, #ff4d79, #d6335a); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin-bottom: 15px; color: white; }
-        .seal-text { color: var(--gold); font-weight: bold; font-size: 0.95rem; }
+        /* زرار الرسالة السرية (الختم) */
+        .seal-btn { background: transparent; border: 2px dashed var(--primary-pink); border-radius: 20px; padding: 20px; cursor: pointer; text-align: center; }
+        .seal-circle { width: 70px; height: 70px; background: linear-gradient(135deg, var(--primary-pink), var(--secondary-pink)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 15px auto; color: white; box-shadow: 0 0 15px var(--primary-pink); animation: pulseSeal 2s infinite;}
+        @keyframes pulseSeal { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
-        /* 4. نافذة الرسالة الطويلة */
-        #message-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 2, 4, 0.95); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
-        .msg-box { background: #230810; padding: 30px 20px; border-radius: 20px; border: 1px solid #d6335a; max-height: 85vh; overflow-y: auto; width: 100%; max-width: 400px; }
-        .msg-box h2 { color: var(--gold); margin-top: 0; text-align: center; border-bottom: 1px solid #4a1524; padding-bottom: 15px;}
-        .msg-box p { font-size: 1.15rem; line-height: 1.9; color: white; text-align: right; }
-        .close-btn { background: #d6335a; color: white; border: none; padding: 12px; width: 100%; border-radius: 10px; font-size: 1.1rem; font-weight: bold; margin-top: 20px; cursor: pointer; }
+        /* 5. نافذة الرسالة الطويلة */
+        #message-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 230, 234, 0.9); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; backdrop-filter: blur(5px); }
+        .msg-box { background: white; padding: 30px 20px; border-radius: 25px; border: 3px solid var(--primary-pink); max-height: 85vh; overflow-y: auto; width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(255, 77, 121, 0.3); }
+        .msg-box h2 { color: var(--primary-pink); margin-top: 0; text-align: center; border-bottom: 2px dashed var(--secondary-pink); padding-bottom: 15px;}
     </style>
 </head>
 <body>
 
-    <audio id="bgMusic" src="موسيقى.mp3" loop></audio>
-
-    <div class="floating-hearts" id="hearts-container"></div>
-
-    <div id="welcome-screen" class="screen">
-        <div class="welcome-box">
-            <h2 style="color: var(--gold); margin-bottom: 20px;">رسالة خاصة لروان ✨</h2>
-            <button class="primary-btn" onclick="startExperience()">اضغطي هنا للبدء 💌</button>
-        </div>
-    </div>
-
-    <div id="lock-screen" class="screen hidden">
-        <div class="lock-container">
-            <div class="lock-icon">🔒</div>
-            <div class="lock-badge">مغلق بالحب</div>
-            <div class="lock-text">اكتبي يا ترى عيد ميلاد القمر امتى.. 🗝️</div>
-            
-            <input type="text" id="pass-input" class="lock-input" placeholder="رمز المرور (مثال: 31/8)" dir="ltr">
-            <button class="primary-btn" onclick="checkPass()">فك لغز البوابة ⭐</button>
-            <p id="error-text" style="color: #ff4b69; margin-top: 15px; font-size: 0.9rem; display: none;">الرمز غير صحيح يا حبيبتي.. حاولي تاني!</p>
+    <div id="lock-screen" class="screen fade-in">
+        <div class="lock-box">
+            <div class="lock-icon">🎀</div>
+            <div class="lock-text">اكتبي عيد ميلاد القمر امتى.. 🗝️</div>
+            <input type="text" id="pass-input" class="lock-input" placeholder="مثال: 31/8" dir="ltr">
+            <button class="pink-btn" onclick="checkPass()">افتحي المفاجأة 💖</button>
+            <p id="error-text" style="color: red; margin-top: 15px; font-size: 0.9rem; display: none; font-weight: bold;">الرمز غلط يا حبيبتي، جربي تاني!</p>
         </div>
     </div>
 
     <div id="loading-screen" class="screen hidden">
         <div class="cake-icon">🎂</div>
-        <h2 class="loading-title">عيد ميلاد سعيد</h2>
+        <h2 style="color: var(--text-dark);">عيد ميلاد سعيد</h2>
         <h1 class="loading-name">RAWAN</h1>
-        <div class="loading-subtitle">تتفتح لك بوابات الحب الآن لمشاهدة تهنئتك الخاصة.. ❤️</div>
-        
         <div class="progress-bar-bg"><div class="progress-fill" id="loading-fill"></div></div>
-        <div class="progress-text" id="loading-text">0%</div>
+        <div style="color: var(--primary-pink); font-weight: bold; font-size: 1.2rem;" id="loading-text">0%</div>
+    </div>
+
+    <div id="audio-lock-screen" class="screen hidden">
+        <div class="audio-lock-box fade-in">
+            <h2>خطوة أخيرة! 🎧</h2>
+            <p>علشان المفاجأة تكمل، اضغطي على زرار التشغيل للمقطع الصوتي الأول.. والموقع هيفتح لوحده بعدها 💖</p>
+            <audio id="main-audio" controls controlsList="nodownload">
+                <source src="موسيقى.mp3" type="audio/mpeg">
+                متصفحك لا يدعم تشغيل الصوت.
+            </audio>
+        </div>
     </div>
 
     <div id="main-screen" class="hidden">
         
-        <div class="hero-card">
-            <div class="notification-bar" id="notif-bar">
-                <span class="close-notif" onclick="hideNotif()">✖</span>
-                <span>أرسلت نبضة مودة ودفء رومانسي إلى روان! ❤️</span>
-                <span style="font-size: 1.2rem;">🌌</span>
-            </div>
-            <div style="text-align: center; color: var(--gold); font-size: 1.5rem; margin-bottom: -15px;">✧</div>
-            <h1 class="name-title">Rawan</h1>
-            <div class="date-badge-container">
-                <div class="date-badge">🎂 200X • 08 • 31 🌠</div>
-            </div>
-            <div class="quote-box">
-                "عامك الجديد وعمري ما يكملوش غير بنور عينيكي و ضحكة قلبك الصافية"
-            </div>
-            <button class="pulse-btn" onclick="showNotif()">أرسل نبضة حب 💖</button>
-
-            <div class="circle-photo-container">
-                <div class="circle-photo">
-                    <img src="photo1.jpg" alt="صورة روان">
-                </div>
-                <div class="music-btn playing" id="musicBtnToggle" onclick="toggleMusic()">🎵</div>
-            </div>
+        <div class="sticky-audio fade-in">
+            <audio id="sticky-audio-player" controls loop controlsList="nodownload">
+                <source src="موسيقى.mp3" type="audio/mpeg">
+            </audio>
         </div>
 
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">A PERSONAL WISH • أمنية خاصة</h3>
-                <span style="font-size: 1.2rem;">💌</span>
+        <div class="card fade-in">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <h1 style="margin: 0; color: var(--primary-pink); font-family: 'Playfair Display', serif; font-size: 3rem;">Rawan</h1>
+                <div style="background: var(--primary-pink); color: white; padding: 5px 20px; border-radius: 20px; display: inline-block; margin-top: 10px; font-weight: bold;">🎂 200X • 08 • 31 🎀</div>
             </div>
-            <p class="card-text">
-                يا نور عيني ويا دنيتي وما فيها، كل سنة وأنتِ طيبة وفي رعاية ربنا. بتمنالك السنة دي تحققي أغلى وأجمل ما بتتمنيه، وتفضلي دايماً منورة حياتي ومبسوطة من قلبك. ❤️
-            </p>
+            
+            <p id="text-1" class="typewriter-text"></p>
+            <button class="show-msg-btn" id="btn-1" onclick="typeWriter('text-1', 'عامك الجديد وعمري ما يكملوش غير بنور عينيكي و ضحكة قلبك الصافية ✨', 'btn-1')">عرض الافتتاحية 💌</button>
         </div>
 
-        <div class="card">
+        <div class="card fade-in">
             <div class="card-header">
-                <h3 class="card-title">ALBUM OF MEMORIES • ألبوم الذكريات</h3>
-                <span style="font-size: 1.2rem;">📸</span>
+                <h3 class="card-title">أمنية خاصة 🌟</h3>
             </div>
-            <div class="photo-grid">
+            <p id="text-2" class="typewriter-text"></p>
+            <button class="show-msg-btn" id="btn-2" onclick="typeWriter('text-2', 'يا نور عيني ويا دنيتي وما فيها، كل سنة وأنتِ طيبة وفي رعاية ربنا. بتمنالك السنة دي تحققي أغلى وأجمل ما بتتمنيه، وتفضلي دايماً منورة حياتي ومبسوطة من قلبك. ❤️', 'btn-2')">عرض الأمنية 💌</button>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-header">
+                <h3 class="card-title">ألبوم الذكريات 📸</h3>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-light); text-align: right; margin-bottom: 15px;">ذكرياتنا الحلوة اللي محفورة في القلب..</p>
+            <div class="media-grid">
+                <img src="photo1.jpg" alt="صورة 1">
                 <img src="photo2.jpg" alt="صورة 2">
                 <img src="photo3.jpg" alt="صورة 3">
                 <img src="photo4.jpg" alt="صورة 4">
-                <img src="photo5.jpg" alt="صورة 5">
             </div>
         </div>
 
-        <div class="card" style="text-align: center;">
-            <h3 style="color: var(--text-main); margin-top: 0; font-size: 1.2rem;">رسالة حب سرية مخصصة لروان 💕</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">اضغطي على الختم في المنتصف لفتح الرسالة الخاصة</p>
+        <div class="card fade-in">
+            <div class="card-header">
+                <h3 class="card-title">فيديوهاتنا 🎥</h3>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-light); text-align: right; margin-bottom: 10px;">لحظاتنا اللي بتتحرك وتضحك..</p>
+            
+            <div class="video-box">
+                <video controls>
+                    <source src="video1.mp4" type="video/mp4">
+                    متصفحك لا يدعم تشغيل الفيديو.
+                </video>
+            </div>
+            
+            </div>
+
+        <div class="card fade-in" style="text-align: center;">
+            <h3 style="color: var(--text-dark); margin-top: 0; font-size: 1.2rem;">رسالة حب سرية مخصصة لروان 💕</h3>
+            <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 20px;">اضغطي على الختم لفتح الرسالة الخاصة</p>
+            
             <div class="seal-btn" onclick="openMessage()">
                 <div class="seal-circle">🤍</div>
-                <div class="seal-text">اضغطي الختم لفتح الرسالة 🔒</div>
+                <div style="color: var(--primary-pink); font-weight: bold;">اضغطي الختم لفتح الرسالة 🔒</div>
             </div>
         </div>
 
     </div>
 
-    <div id="message-modal" class="hidden">
+    <div id="message-modal" class="hidden fade-in">
         <div class="msg-box">
             <h2>رسالة حب سرية 💌</h2>
-            <p>
-                عيد ميلاد أحلى وأجمل وأطيب حد في الدنيا كلها..
-                <br><br>
-                كل سنة وأنتِ طيبة يا حبيبتي، كل سنة وأنتِ معايا ومحليا أيامي، يا نور عيني ويا مهجة قلبي ويا فرحة عمري. 
-                <br><br>
-                بحبــــــك جداً جداً جداً ❤️
-            </p>
-            <button class="close-btn" onclick="closeMessage()">إغلاق الرسالة</button>
+            
+            <p id="text-3" class="typewriter-text"></p>
+            <button class="show-msg-btn" id="btn-3" onclick="typeWriter('text-3', 'عيد ميلاد أحلى وأجمل وأطيب حد في الدنيا كلها.. \n\n كل سنة وأنتِ طيبة يا حبيبتي، كل سنة وأنتِ معايا ومحليا أيامي، يا نور عيني ويا مهجة قلبي ويا فرحة عمري. \n\n كل سنة وأنتِ حبيبتي وروحي، وربنا يخليكي ليا وميحرمنيش منك أبداً يا حبيبة عيني. \n\n بحبــــــك جداً جداً جداً ❤️', 'btn-3')">اقرأي الرسالة 💌</button>
+            
+            <button class="pink-btn" style="margin-top: 20px;" onclick="closeMessage()">إغلاق</button>
         </div>
     </div>
 
     <script>
-        // 1. توليد القلوب
-        const heartsContainer = document.getElementById('hearts-container');
-        const heartIcons = ['❤️', '🤍', '✨'];
-        for(let i = 0; i < 20; i++) {
-            let heart = document.createElement('div');
-            heart.innerHTML = heartIcons[Math.floor(Math.random() * heartIcons.length)];
-            heart.className = 'heart';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = (Math.random() * 8 + 6) + 's';
-            heart.style.animationDelay = Math.random() * 5 + 's';
-            heart.style.fontSize = (Math.random() * 10 + 10) + 'px';
-            heartsContainer.appendChild(heart);
-        }
-
-        // 2. زرار البدء (تشغيل المزيكا وإظهار القفل)
-        function startExperience() {
-            var audio = document.getElementById('bgMusic');
-            if (audio) {
-                audio.play().catch(function(e) {
-                    console.log("الصوت محتاج تفاعل مباشر أكتر");
-                });
-            }
-            // إخفاء الترحيب وإظهار القفل
-            document.getElementById('welcome-screen').classList.add('hidden');
-            document.getElementById('lock-screen').classList.remove('hidden');
-        }
-
-        // 3. زرار فك الباسورد (بدون أي كود موسيقى)
+        // 1. فحص الباسورد
         function checkPass() {
             var passValue = document.getElementById('pass-input').value.toLowerCase();
-            
-            // الفحص بيقبل 31 بالعربي والانجليزي وحرف R
             if (passValue.includes('31') || passValue.includes('٣١') || passValue.includes('r')) {
-                document.getElementById('error-text').style.display = 'none';
-                
-                // الانتقال للتحميل مباشرة
-                document.getElementById('lock-screen').classList.add('hidden');
-                document.getElementById('loading-screen').classList.remove('hidden');
+                document.getElementById('lock-screen').style.display = 'none';
+                document.getElementById('loading-screen').style.display = 'flex';
                 startLoading();
             } else {
                 document.getElementById('error-text').style.display = 'block';
             }
         }
 
-        // 4. شريط التحميل
+        // 2. التحميل
         function startLoading() {
             var progress = 0;
             var bar = document.getElementById('loading-fill');
@@ -281,39 +228,114 @@
                 if (progress >= 100) {
                     progress = 100;
                     clearInterval(interval);
-                    
-                    document.getElementById('loading-screen').classList.add('hidden');
-                    document.getElementById('main-screen').classList.remove('hidden');
-                    
-                    try { confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } }); } catch(e){}
+                    // بعد التحميل نوديها لشاشة إجبار تشغيل الصوت
+                    document.getElementById('loading-screen').style.display = 'none';
+                    document.getElementById('audio-lock-screen').style.display = 'flex';
                 }
                 bar.style.width = progress + '%';
                 text.innerText = progress + '%';
             }, 250); 
         }
 
-        // 5. زرار الموسيقى في الصفحة
-        function toggleMusic() {
-            var audio = document.getElementById('bgMusic');
-            var btn = document.getElementById('musicBtnToggle');
-            if(audio.paused) { 
-                audio.play(); 
-                btn.classList.add('playing');
-            } else { 
-                audio.pause(); 
-                btn.classList.remove('playing');
+        // 3. برمجة إجبار تشغيل الصوت 
+        var mainAudio = document.getElementById('main-audio');
+        var stickyAudio = document.getElementById('sticky-audio-player');
+        var isUnlocked = false;
+
+        // أول ما تدوس Play على الملف في شاشة الإجبار
+        mainAudio.addEventListener('play', function() {
+            if (!isUnlocked) {
+                isUnlocked = true;
+                
+                // نقفل شاشة الإجبار ونفتح الموقع
+                document.getElementById('audio-lock-screen').style.display = 'none';
+                document.getElementById('main-screen').style.display = 'flex';
+                
+                // نشغل شلال البلالين والورق الملون
+                startConfettiShower();
+                
+                // نوقف المشغل المؤقت ونشغل المشغل الأساسي اللي هيكمل معاها
+                mainAudio.pause();
+                stickyAudio.currentTime = mainAudio.currentTime; // عشان يكمل من نفس الثانية
+                stickyAudio.play();
             }
+        });
+
+        // 4. دالة الكتابة الآلية (Typewriter Effect)
+        function typeWriter(textElementId, textContent, btnId) {
+            // نخفي زرار العرض
+            document.getElementById(btnId).style.display = 'none';
+            
+            var el = document.getElementById(textElementId);
+            el.style.display = 'block'; // نظهر البراجراف
+            el.innerHTML = ''; // نفضيه الأول
+            
+            var i = 0;
+            // عشان لو في سطر جديد \n يحوله لـ <br>
+            var formattedText = textContent.replace(/\n/g, "<br>");
+            // هنستخدم طريقة ذكية لكتابة الـ HTML تاج زي ما هو
+            var tempDiv = document.createElement('div');
+            tempDiv.innerHTML = formattedText;
+            var finalString = tempDiv.innerHTML;
+            var isTag = false;
+            var currentText = "";
+
+            function type() {
+                if (i < finalString.length) {
+                    var char = finalString.charAt(i);
+                    if (char === '<') isTag = true;
+                    if (char === '>') isTag = false;
+                    
+                    currentText += char;
+                    el.innerHTML = currentText;
+                    i++;
+                    
+                    // لو بيكتب جوه تاج (زي <br>) يخلص بسرعة وميستناش
+                    if(isTag) {
+                        type();
+                    } else {
+                        setTimeout(type, 40); // سرعة الكتابة
+                    }
+                }
+            }
+            type();
         }
 
-        // 6. النبضة والرسالة
-        function showNotif() {
-            document.getElementById('notif-bar').style.display = 'flex';
-            try { confetti({ particleCount: 30, spread: 50, origin: { y: 0.4 } }); } catch(e){}
+        // 5. شلال الورق الملون والبلالين (ينزل من فوق ويستمر شوية)
+        function startConfettiShower() {
+            var duration = 5 * 1000; // 5 ثواني
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+
+                var particleCount = 50 * (timeLeft / duration);
+                
+                // ينزل من فوق من أماكن عشوائية عرضياً
+                confetti(Object.assign({}, defaults, { 
+                    particleCount, 
+                    origin: { x: randomInRange(0.1, 0.9), y: Math.random() - 0.2 },
+                    colors: ['#ff4d79', '#ff7eb3', '#d4af37', '#ffffff'] // ألوان بناتي
+                }));
+            }, 250);
         }
-        function hideNotif() { document.getElementById('notif-bar').style.display = 'none'; }
-        function openMessage() { document.getElementById('message-modal').classList.remove('hidden'); }
-        function closeMessage() { document.getElementById('message-modal').classList.add('hidden'); }
+
+        // 6. فتح وقفل الرسالة الختامية
+        function openMessage() { 
+            document.getElementById('message-modal').style.display = 'flex'; 
+        }
+        function closeMessage() { 
+            document.getElementById('message-modal').style.display = 'none'; 
+        }
     </script>
 </body>
-    </html>
-    
+</html>
