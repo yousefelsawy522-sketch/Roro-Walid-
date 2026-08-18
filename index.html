@@ -111,6 +111,8 @@
 
     <audio id="bgMusic" src="موسيقى.mp3" loop></audio>
 
+    <div class="floating-hearts" id="hearts-container"></div>
+
     <div id="lock-screen" class="screen fade-in">
         <div class="lock-box">
             <div class="lock-icon">🎀</div>
@@ -189,7 +191,6 @@
                 <h3 class="card-title">فيديوهاتنا 🎥</h3>
             </div>
             <p style="font-size: 0.9rem; color: var(--text-light); text-align: right; margin-bottom: 10px;">لحظاتنا اللي بتتحرك وتضحك..</p>
-            
             <div class="video-box">
                 <video controls>
                     <source src="video1.mp4" type="video/mp4">
@@ -201,7 +202,6 @@
         <div class="card fade-in" style="text-align: center;">
             <h3 style="color: var(--text-dark); margin-top: 0; font-size: 1.2rem;">رسالة حب سرية مخصصة لروان 💕</h3>
             <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 20px;">اضغطي على الختم لفتح الرسالة الخاصة</p>
-            
             <div class="seal-btn" onclick="openMessage()">
                 <div class="seal-circle">🤍</div>
                 <div style="color: var(--primary-pink); font-weight: bold;">اضغطي الختم لفتح الرسالة 🔒</div>
@@ -213,40 +213,47 @@
     <div id="message-modal" class="hidden fade-in">
         <div class="msg-box">
             <h2>رسالة حب سرية 💌</h2>
-            
             <p id="text-3" class="typewriter-text"></p>
             <button class="show-msg-btn" id="btn-3" onclick="typeWriter('text-3', 'عيد ميلاد أحلى وأجمل وأطيب حد في الدنيا كلها.. \n\n كل سنة وأنتِ طيبة يا حبيبتي، كل سنة وأنتِ معايا ومحليا أيامي، يا نور عيني ويا مهجة قلبي ويا فرحة عمري. \n\n كل سنة وأنتِ حبيبتي وروحي، وربنا يخليكي ليا وميحرمنيش منك أبداً يا حبيبة عيني. \n\n بحبــــــك جداً جداً جداً ❤️', 'btn-3')">اقرأي الرسالة 💌</button>
-            
             <button class="pink-btn" style="margin-top: 20px;" onclick="closeMessage()">إغلاق الرسالة</button>
         </div>
     </div>
 
     <script>
-        // 1. القلوب الطايرة
-        const heartsContainer = document.getElementById('hearts-container');
-        const heartIcons = ['🎀', '🤍', '✨', '💖'];
-        for(let i = 0; i < 20; i++) {
-            let heart = document.createElement('div');
-            heart.innerHTML = heartIcons[Math.floor(Math.random() * heartIcons.length)];
-            heart.className = 'heart';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = (Math.random() * 8 + 6) + 's';
-            heart.style.animationDelay = Math.random() * 5 + 's';
-            heart.style.fontSize = (Math.random() * 10 + 10) + 'px';
-            heartsContainer.appendChild(heart);
-        }
+        // 1. القلوب الطايرة (أول ما الموقع يفتح)
+        window.onload = function() {
+            try {
+                const heartsContainer = document.getElementById('hearts-container');
+                const heartIcons = ['🎀', '🤍', '✨', '💖'];
+                for(let i = 0; i < 20; i++) {
+                    let heart = document.createElement('div');
+                    heart.innerHTML = heartIcons[Math.floor(Math.random() * heartIcons.length)];
+                    heart.className = 'heart';
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.animationDuration = (Math.random() * 8 + 6) + 's';
+                    heart.style.animationDelay = Math.random() * 5 + 's';
+                    heart.style.fontSize = (Math.random() * 10 + 10) + 'px';
+                    heartsContainer.appendChild(heart);
+                }
+            } catch(e) {}
+        };
 
         // 2. فحص الباسورد
-        function checkPass() {
-            var passValue = document.getElementById('pass-input').value.toLowerCase();
-            if (passValue.includes('31') || passValue.includes('٣١') || passValue.includes('r')) {
-                document.getElementById('lock-screen').style.display = 'none';
-                document.getElementById('loading-screen').style.display = 'flex';
-                startLoading();
-            } else {
-                document.getElementById('error-text').style.display = 'block';
+        window.checkPass = function() {
+            try {
+                var passValue = document.getElementById('pass-input').value.toLowerCase();
+                if (passValue.includes('31') || passValue.includes('٣١') || passValue.includes('r')) {
+                    document.getElementById('error-text').style.display = 'none';
+                    document.getElementById('lock-screen').style.display = 'none';
+                    document.getElementById('loading-screen').classList.remove('hidden');
+                    startLoading();
+                } else {
+                    document.getElementById('error-text').style.display = 'block';
+                }
+            } catch(e) {
+                console.log(e);
             }
-        }
+        };
 
         // 3. التحميل
         function startLoading() {
@@ -259,9 +266,8 @@
                 if (progress >= 100) {
                     progress = 100;
                     clearInterval(interval);
-                    // بعد التحميل نوديها لشاشة إجبار تشغيل الصوت
                     document.getElementById('loading-screen').style.display = 'none';
-                    document.getElementById('audio-lock-screen').style.display = 'flex';
+                    document.getElementById('audio-lock-screen').classList.remove('hidden');
                 }
                 bar.style.width = progress + '%';
                 text.innerText = progress + '%';
@@ -269,46 +275,41 @@
         }
 
         // 4. زرار إجبار التشغيل وبدء المفاجأة
-        function startExperience() {
+        window.startExperience = function() {
             var audio = document.getElementById('bgMusic');
-            
-            // محاولة تشغيل الصوت
-            var playPromise = audio.play();
-            if (playPromise !== undefined) {
-                playPromise.then(_ => {
-                    // الصوت اشتغل تمام
-                }).catch(error => {
-                    console.log("المتصفح منع الصوت");
-                });
+            if(audio) {
+                var playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(function(error) { console.log("الصوت محتاج تفاعل مباشر"); });
+                }
             }
 
-            // في كل الأحوال الموقع هيفتح والشلال هينزل
             document.getElementById('audio-lock-screen').style.display = 'none';
-            document.getElementById('main-screen').style.display = 'flex';
+            document.getElementById('main-screen').classList.remove('hidden');
             
-            // نشغل شلال البلالين والورق الملون
             startConfettiShower();
-        }
+        };
 
         // 5. زرار تشغيل وإيقاف الصوت في الصفحة
-        function toggleMusic() {
+        window.toggleMusic = function() {
             var audio = document.getElementById('bgMusic');
             var btn = document.getElementById('music-toggle-btn');
-            
-            if(audio.paused) {
-                audio.play();
-                btn.classList.add('playing');
-                btn.innerHTML = '🎵 إيقاف الموسيقى';
-            } else {
-                audio.pause();
-                btn.classList.remove('playing');
-                btn.innerHTML = '🔇 تشغيل الموسيقى';
+            if(audio) {
+                if(audio.paused) {
+                    audio.play();
+                    btn.classList.add('playing');
+                    btn.innerHTML = '🎵 إيقاف الموسيقى';
+                } else {
+                    audio.pause();
+                    btn.classList.remove('playing');
+                    btn.innerHTML = '🔇 تشغيل الموسيقى';
+                }
             }
-        }
+        };
 
-        // 6. دالة الكتابة الآلية (Typewriter Effect)
-        function typeWriter(textElementId, textContent, btnId) {
-            document.getElementById(btnId).style.display = 'none'; // اخفاء الزرار
+        // 6. دالة الكتابة الآلية
+        window.typeWriter = function(textElementId, textContent, btnId) {
+            document.getElementById(btnId).style.display = 'none';
             var el = document.getElementById(textElementId);
             el.style.display = 'block'; 
             el.innerHTML = ''; 
@@ -339,15 +340,10 @@
                 }
             }
             type();
-        }
+        };
 
-        // 7. شلال الورق الملون والبلالين (ينزل من فوق ويستمر شوية)
+        // 7. شلال الورق الملون والبلالين
         function startConfettiShower() {
-            var duration = 5 * 1000; // 5 ثواني
+            var duration = 5 * 1000; 
             var animationEnd = Date.now() + duration;
-            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
-
-            function randomInRange(min, max) { return Math.random() * (max - min) + min; }
-
-            var interval = setInterval(function() {
-                var timeLeft = anima
+            var defaults = { startVelocity: 30, spread: 360, 
