@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Her Special Day</title>
-    <!-- استدعاء الخطوط الكلاسيكية (نفس اللي في الفيديو) -->
+    <!-- استدعاء الخطوط الكلاسيكية -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
     
     <style>
@@ -20,7 +20,7 @@
             background-color: var(--bg-color);
             background-image: radial-gradient(circle at center, #2a2238 0%, #15101a 100%);
             color: var(--text-main);
-            font-family: 'Playfair Display', serif; /* الخط الأساسي الكلاسيكي */
+            font-family: 'Playfair Display', serif;
             overflow-x: hidden;
             text-align: center;
         }
@@ -39,7 +39,7 @@
             50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 8px white; }
         }
 
-        /* نظام الشاشات (تنتقل بنعومة شديدة) */
+        /* نظام الشاشات */
         .section {
             min-height: 100vh; display: flex; flex-direction: column;
             align-items: center; justify-content: center; width: 100%;
@@ -50,7 +50,7 @@
             opacity: 1; pointer-events: auto; position: relative;
         }
 
-        /* شكل الزراير الشفاف (نفس الفيديو) */
+        /* شكل الزراير الشفاف */
         .btn-outline {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.5);
@@ -61,7 +61,7 @@
         }
         .btn-outline:hover { background: rgba(255, 255, 255, 0.2); }
 
-        /* النصوص الصغيرة (Sans-serif) */
+        /* النصوص الصغيرة */
         .subtitle {
             font-family: 'Cairo', sans-serif; font-size: 0.8rem;
             letter-spacing: 3px; color: var(--text-muted); text-transform: uppercase;
@@ -102,18 +102,31 @@
 
         .hidden-btn { opacity: 0; pointer-events: none; transition: 1.5s; }
         .hidden-btn.show { opacity: 1; pointer-events: auto; }
+
+        /* زرار الموسيقى العائم */
+        #music-toggle {
+            position: fixed; top: 20px; right: 20px; z-index: 1000;
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 50%; width: 45px; height: 45px;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; font-size: 1.2rem; display: none; transition: 0.3s;
+        }
+        #music-toggle.playing { background: rgba(255,255,255,0.3); }
     </style>
 </head>
 <body>
 
-    <!-- ملف الموسيقى (يجب أن يكون بجوار الملف) -->
+    <!-- ملف الموسيقى الأساسي -->
     <audio id="bgMusic" src="موسيقى.mp3" loop></audio>
 
     <!-- النجوم المضيئة في الخلفية -->
     <div class="stars-container" id="stars"></div>
 
+    <!-- زرار الموسيقى اللي هيظهر بعد الباسورد -->
+    <div id="music-toggle" onclick="toggleMusic()">🎵</div>
+
     <!-- ==========================================
-         1. شاشة القفل (بديل التايمر بنفس الستايل)
+         1. شاشة القفل 
          ========================================== -->
     <div id="sec-password" class="section active">
         <p class="subtitle">✨ MENGHITUNG HARI ✨</p>
@@ -121,7 +134,7 @@
         <h1 style="font-size: 2.5rem; margin: 0; font-style: italic;">is Coming</h1>
         
         <p style="font-family: 'Cairo', sans-serif; font-size: 0.9rem; color: var(--text-muted); margin-top: 25px;">
-            اكتبي عيد ميلاد القمر امتى.. 🗝️
+            اكتبي تاريخ ميلاد أحلى أخت.. 🗝️
         </p>
         
         <input type="text" id="pass-input" class="pass-input" placeholder="مثال: 31/8 أو 2014" dir="rtl">
@@ -136,39 +149,37 @@
     <div id="sec-gift" class="section">
         <p class="subtitle">✨ ADA SESUATU UNTUKMU ✨</p>
         <div class="gift-icon" onclick="openGift()">🎁</div>
-        <p style="font-family: 'Cairo', sans-serif; font-size: 0.85rem; color: var(--text-muted);">انقري لفتح هديتك 🎵</p>
+        <p style="font-family: 'Cairo', sans-serif; font-size: 0.85rem; color: var(--text-muted);">انقري لفتح هديتك وتشغيل الموسيقى 🎵</p>
     </div>
 
     <!-- ==========================================
          3. شاشة الافتتاحية
          ========================================== -->
     <div id="sec-intro" class="section">
-        <p class="subtitle">✨ A LOVE LETTER FOR YOU ✨</p>
+        <p class="subtitle">✨ A SPECIAL LETTER FOR YOU ✨</p>
         <h1 style="font-size: 4rem; margin: 10px 0;">Your<br>Special Day</h1>
-        <p style="font-family: 'Cairo', sans-serif; font-size: 1rem; color: var(--text-muted); font-style: italic;">Created with love, just for you</p>
+        <p style="font-family: 'Cairo', sans-serif; font-size: 1rem; color: var(--text-muted); font-style: italic;">Created with love, for my sister</p>
         <button class="btn-outline" onclick="nextSec('sec-intro', 'sec-letter')">💌 READ MY LETTER 💌</button>
     </div>
 
     <!-- ==========================================
-         4. شاشة الرسالة (بالكتابة الآلية)
+         4. شاشة الرسالة (كلام الأخ لأخته)
          ========================================== -->
     <div id="sec-letter" class="section" style="padding: 20px; max-width: 650px; margin: 0 auto;">
         <h1 style="font-size: 3rem; margin-bottom: 40px;">Happy Birthday</h1>
         
-        <!-- نص الرسالة يتكتب لوحده عربي بشكل فخم -->
         <p id="typewriter-text" style="font-family: 'Cairo', sans-serif; font-size: 1.15rem; line-height: 2; text-align: right; min-height: 250px;" dir="rtl"></p>
         
         <button class="btn-outline hidden-btn" id="btn-memories" onclick="nextSec('sec-letter', 'sec-memories')">OUR MEMORIES ☁️</button>
     </div>
 
     <!-- ==========================================
-         5. شاشة الذكريات (صور متطورة)
+         5. شاشة الذكريات
          ========================================== -->
     <div id="sec-memories" class="section">
         <h1 style="font-size: 3rem; margin-bottom: 5px;">Our Memories</h1>
         <p class="subtitle" style="text-transform: lowercase;">✨ every moment captured in lens ✨</p>
         
-        <!-- صور البولارويد المائلة بشكل عشوائي -->
         <div class="polaroid-grid">
             <div class="polaroid" style="transform: rotate(-6deg);"><img src="photo1.jpg"></div>
             <div class="polaroid" style="transform: rotate(4deg);"><img src="photo2.jpg"></div>
@@ -200,39 +211,39 @@
     </div>
 
     <!-- ==========================================
-         7. شاشة الأمنيات
+         7. شاشة الأمنيات (أخ لأخته)
          ========================================== -->
     <div id="sec-wishes" class="section" style="padding: 20px; max-width: 600px; margin: 0 auto;">
         <h1 style="font-size: 3rem; margin-bottom: 30px;">Birthday Wishes</h1>
-        <p style="font-family: 'Cairo', sans-serif; font-weight: 600; font-size: 1.2rem; text-align: left; width: 100%;">Happy birthday, my love 🤍</p>
+        <p style="font-family: 'Cairo', sans-serif; font-weight: 600; font-size: 1.2rem; text-align: left; width: 100%;">Happy birthday, best sister 🤍</p>
         
         <p style="font-family: 'Cairo', sans-serif; font-size: 1.1rem; line-height: 2; text-align: right; color: var(--text-muted);" dir="rtl">
             أتمنى لك السعادة، والصحة، والنجاح، وكل النعم في عامك الجديد.
-            أتمنى أن تتحقق كل أحلامك، وتُملأ أيامك بالفرح، ويكون قلبك دائمًا في سلام.
-            شكراً لكونك جزء رائع من حياتي. أتمنى أن يجلب لك هذا اليوم المميز كل ما تتمنيه.
-            ابقي سعيدة، ومشرقة دائمًا. أحبك للأبد. 🤍
+            أتمنى أن تتحقق كل أحلامك يا أحلى أخت، وتُملأ أيامك بالفرح، ويكون قلبك دائمًا في سلام.
+            شكراً لكونك أختي وصاحبتي وكل حاجة حلوة في حياتنا. أتمنى أن يجلب لك هذا اليوم المميز كل ما تتمنيه.
+            ابقي سعيدة، ومشرقة دائمًا. أخوكي اللي بيحبك. 🤍
         </p>
         
         <button class="btn-outline" onclick="nextSec('sec-wishes', 'sec-outro')">ONE MORE THING ✨</button>
     </div>
 
     <!-- ==========================================
-         8. شاشة النهاية المتغيرة
+         8. شاشة النهاية
          ========================================== -->
     <div id="sec-outro" class="section">
         <h1 id="outro-title" style="font-size: 3.5rem; transition: opacity 1s ease-in-out;">Happy Birthday</h1>
         
         <p style="font-family: 'Cairo', sans-serif; font-size: 1rem; color: var(--text-muted); line-height: 2; margin-top: 20px;" dir="rtl">
-            شكراً لأنكِ جزء من حياتي.<br>
+            شكراً لأنكِ أحلى أخت في الدنيا.<br>
             أتمنى أن تجعل هذه الهدية البسيطة يومك المميز أكثر جمالاً.
         </p>
-        <p style="font-size: 1.2rem; font-style: italic; margin-top: 20px;">Forever yours. 🤍</p>
+        <p style="font-size: 1.2rem; font-style: italic; margin-top: 20px;">Your loving brother. 🤍</p>
         
         <button class="btn-outline" onclick="location.reload()">↻ REPLAY FROM START</button>
     </div>
 
     <!-- ==========================================
-         أكواد الجافاسكريبت (الحركة والتنقل)
+         أكواد الجافاسكريبت
          ========================================== -->
     <script>
         // 1. توليد النجوم المضيئة في الخلفية
@@ -255,37 +266,63 @@
             setTimeout(() => {
                 document.getElementById(nextId).classList.add('active');
                 
-                // لو راح لشاشة الرسالة يبدأ يكتبها لوحده
                 if (nextId === 'sec-letter') {
                     startTypewriter();
                 }
-                // لو راح لشاشة النهاية يبدأ يغير العنوان
                 if (nextId === 'sec-outro') {
                     startOutroAnimation();
                 }
-            }, 1000); // ينتظر ثانية لحد ما الشاشة تظلم وتظهر الجديدة
+            }, 1000); 
         }
 
-        // 3. فحص الباسورد والانتقال للهدية
+        // 3. فحص الباسورد
         function checkPassword() {
             let pass = document.getElementById('pass-input').value.toLowerCase();
             if (pass.includes('31') || pass.includes('٣١') || pass.includes('r') || pass.includes('2014')) {
                 document.getElementById('error-msg').style.display = 'none';
+                
+                // إظهار زرار الموسيقى العائم بعد الدخول
+                document.getElementById('music-toggle').style.display = 'flex';
+                
                 nextSec('sec-password', 'sec-gift');
             } else {
                 document.getElementById('error-msg').style.display = 'block';
             }
         }
 
-        // 4. دالة فتح الهدية وتشغيل الموسيقى إجبارياً
+        // 4. دالة فتح الهدية وتشغيل الموسيقى
         function openGift() {
             let audio = document.getElementById('bgMusic');
-            audio.play().catch(e => console.log('المتصفح منع الصوت المؤقت'));
+            let musicBtn = document.getElementById('music-toggle');
+            
+            // محاولة التشغيل
+            let playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    musicBtn.classList.add('playing');
+                }).catch(error => {
+                    console.log('المتصفح منع التشغيل التلقائي');
+                });
+            }
             nextSec('sec-gift', 'sec-intro');
         }
 
-        // 5. الكتابة الآلية للرسالة
-        const letterText = "عيد ميلاد سعيد يا حبيبتي 🤍\n\nكل سنة وأنتِ طيبة، كل سنة وأنتِ معايا ومحليا أيامي. يا نور عيني ويا مهجة قلبي، اليوم ده من أجمل أيام السنة عشان ده اليوم اللي نورتي فيه الدنيا.\n\nربنا يخليكي ليا وميحرمنيش منك أبداً يا حبيبة عيني.\n\nبحبك جداً جداً جداً ❤️";
+        // 5. زرار التحكم اليدوي في الموسيقى (الزرار العائم)
+        function toggleMusic() {
+            let audio = document.getElementById('bgMusic');
+            let musicBtn = document.getElementById('music-toggle');
+            
+            if (audio.paused) {
+                audio.play();
+                musicBtn.classList.add('playing');
+            } else {
+                audio.pause();
+                musicBtn.classList.remove('playing');
+            }
+        }
+
+        // 6. الكتابة الآلية للرسالة (كلام أخ لأخته)
+        const letterText = "عيد ميلاد سعيد يا أحلى أخت في الدنيا 🤍\n\nكل سنة وأنتِ طيبة، كل سنة وأنتِ منورة حياتنا ومحليا أيامنا. اليوم ده من أجمل أيام السنة عشان ده اليوم اللي جيتي فيه الدنيا ونورتي بيتنا.\n\nربنا يخليكي ليا ومايحرمنيش منك أبداً يا سندي وأختي الجميلة.\n\nبحبك جداً يا أحلى روان ❤️";
         let charIndex = 0;
         let isTyping = false;
 
@@ -305,15 +342,14 @@
                     charIndex++;
                     setTimeout(type, 50); // سرعة الكتابة
                 } else {
-                    // إظهار زرار الذكريات بعد ما يخلص كتابة
                     document.getElementById('btn-memories').classList.add('show');
                 }
             }
-            setTimeout(type, 1000); // يبدأ يكتب بعد ثانية من ظهور الشاشة
+            setTimeout(type, 1000); 
         }
 
-        // 6. حركة النص في شاشة النهاية المتغيرة
-        const outroTitles = ["Happy Birthday", "With All My Love", "Always & Forever"];
+        // 7. حركة النص في شاشة النهاية المتغيرة (كلام يناسب الأخت)
+        const outroTitles = ["Happy Birthday", "Best Sister Ever", "Always Here For You"];
         let titleIdx = 0;
         function startOutroAnimation() {
             const titleEl = document.getElementById('outro-title');
@@ -323,8 +359,8 @@
                     titleIdx = (titleIdx + 1) % outroTitles.length;
                     titleEl.innerText = outroTitles[titleIdx];
                     titleEl.style.opacity = 1;
-                }, 1000); // زمن الاختفاء
-            }, 4000); // كل 4 ثواني يغير الكلمة
+                }, 1000); 
+            }, 4000); 
         }
     </script>
 </body>
