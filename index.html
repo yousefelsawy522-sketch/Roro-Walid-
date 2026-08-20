@@ -244,11 +244,21 @@
         <h1 style="font-size: 3rem; margin-bottom: 5px;">A Moment For You</h1>
         <p class="subtitle" style="text-transform: lowercase;">✨ a special video message ✨</p>
         
-        <div style="max-width: 500px; width: 90%; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.8); border-radius: 10px; overflow: hidden; border: 2px solid rgba(255,255,255,0.2);">
-            <video id="myVideo" controls style="width: 100%; display: block;">
-                <source src="video1.mp4" type="video/mp4">
-            </video>
-        </div>
+       <div style="max-width: 500px; width: 90%; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.8); border-radius: 10px; overflow: hidden; border: 2px solid rgba(255,255,255,0.2); padding: 10px;">
+    
+    <video id="myVideo1" controls style="width: 100%; display: block; margin-bottom: 15px; border-radius: 5px;">
+        <source src="video1.mp4" type="video/mp4">
+    </video>
+    
+    <video id="myVideo2" controls style="width: 100%; display: block; margin-bottom: 15px; border-radius: 5px;">
+        <source src="video2.mp4" type="video/mp4">
+    </video>
+    
+    <video id="myVideo3" controls style="width: 100%; display: block; border-radius: 5px;">
+        <source src="video3.mp4" type="video/mp4">
+    </video>
+
+</div>
         
         <button class="btn-outline" onclick="nextSec('sec-video', 'sec-wishes')">BIRTHDAY WISHES ✨</button>
     </div>
@@ -343,27 +353,28 @@
         }
 
         // ==========================================
-        // إيقاف الموسيقى تلقائياً عند تشغيل الفيديو
+        // إيقاف الموسيقى تلقائياً عند تشغيل أي فيديو
         // ==========================================
-        const myVideo = document.getElementById('myVideo');
         const bgMusic = document.getElementById('bgMusic');
         const musicBtn = document.getElementById('music-toggle');
+        const allVideos = document.querySelectorAll('video'); // بيجيب كل الفيديوهات اللي في الموقع
 
-        myVideo.addEventListener('play', function() {
-            bgMusic.pause();
-            musicBtn.classList.remove('playing');
+        allVideos.forEach(video => {
+            video.addEventListener('play', function() {
+                bgMusic.pause();
+                musicBtn.classList.remove('playing');
+            });
+
+            video.addEventListener('pause', function() {
+                bgMusic.play();
+                musicBtn.classList.add('playing');
+            });
+
+            video.addEventListener('ended', function() {
+                bgMusic.play();
+                musicBtn.classList.add('playing');
+            });
         });
-
-        myVideo.addEventListener('pause', function() {
-            bgMusic.play();
-            musicBtn.classList.add('playing');
-        });
-
-        myVideo.addEventListener('ended', function() {
-            bgMusic.play();
-            musicBtn.classList.add('playing');
-        });
-
         // ==========================================
         // الكتابة الآلية المنسقة (عنوان + نص)
         // ==========================================
