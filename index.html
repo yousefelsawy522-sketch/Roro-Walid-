@@ -305,11 +305,15 @@
             starsContainer.appendChild(star);
         }
 
-        // التنقل الناعم بين الشاشات
+        // التنقل الناعم بين الشاشات مع الرجوع لأعلى الصفحة
         function nextSec(currentId, nextId) {
             document.getElementById(currentId).classList.remove('active');
             setTimeout(() => {
+                // السطر ده هو اللي بيرجع الشاشة لفوق خالص تلقائياً
+                window.scrollTo({ top: 0, behavior: 'smooth' }); 
+                
                 document.getElementById(nextId).classList.add('active');
+                
                 if (nextId === 'sec-letter') startTypewriter();
                 if (nextId === 'sec-outro') startOutroAnimation();
             }, 1000); 
