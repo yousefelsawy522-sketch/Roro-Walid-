@@ -100,7 +100,6 @@
         }
         .side-photo img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
         
-        /* أماكن الـ 8 صور بشكل عشوائي واحترافي */
         .sp-1 { top: 10%; left: 5%; --rot: -15deg; animation-delay: 0s; }
         .sp-2 { top: 35%; left: 10%; --rot: 10deg; animation-delay: 1s; }
         .sp-3 { top: 60%; left: 5%; --rot: -5deg; animation-delay: 0.5s; }
@@ -135,7 +134,6 @@
         }
         .polaroid img { width: 100%; aspect-ratio: 1/1.1; object-fit: cover; }
         
-        /* انيميشن التكبير الراقي (Zoom) */
         .polaroid:hover {
             transform: scale(1.15) rotate(0deg) !important;
             z-index: 100;
@@ -145,7 +143,7 @@
         .hidden-btn { opacity: 0; pointer-events: none; transition: 1.5s; }
         .hidden-btn.show { opacity: 1; pointer-events: auto; }
 
-        /* زرار الموسيقى */
+        /* زرار الموسيقى العائم */
         #music-toggle {
             position: fixed; top: 20px; right: 20px; z-index: 1000;
             background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3);
@@ -158,10 +156,13 @@
 </head>
 <body>
 
-    <audio id="bgMusic" src="موسيقى.mp3" loop></audio>
+    <!-- ملف الموسيقى (تم تغيير الاسم لـ music.mp3 لتجنب مشاكل المتصفح) -->
+    <audio id="bgMusic" src="music.mp3" loop></audio>
+    
     <div class="stars-container" id="stars"></div>
     <div id="music-toggle" onclick="toggleMusic()">🎵</div>
 
+    <!-- 1. شاشة القفل -->
     <div id="sec-password" class="section active">
         <p class="subtitle">✨ MENGHITUNG HARI ✨</p>
         <h1 style="font-size: 3rem; margin: 0; font-style: italic;">Her Special Day</h1>
@@ -177,12 +178,14 @@
         <button class="btn-outline" onclick="checkPassword()">✨ OPEN HER GIFT ✨</button>
     </div>
 
+    <!-- 2. شاشة الهدية -->
     <div id="sec-gift" class="section">
         <p class="subtitle">✨ ADA SESUATU UNTUKMU ✨</p>
         <div class="gift-icon" onclick="openGift(this)">🎁</div>
         <p style="font-family: 'Cairo', sans-serif; font-size: 0.85rem; color: var(--text-muted);">انقري لفتح هديتك وتشغيل الموسيقى 🎵</p>
     </div>
 
+    <!-- 3. شاشة الافتتاحية -->
     <div id="sec-intro" class="section" style="padding: 20px 0;">
         <div class="side-photo sp-1"><img src="photo1.jpg"></div>
         <div class="side-photo sp-2"><img src="photo2.jpg"></div>
@@ -197,18 +200,20 @@
         <h1 class="main-title">Your<br>Special Day</h1>
         
         <p style="font-family: 'Cairo', sans-serif; font-size: 1.1rem; color: #fbe29f; font-style: italic; position: relative; z-index: 20; max-width: 500px; line-height: 1.8; margin-top: 20px;" dir="rtl">
-            كل سنة وأنتِ منورة حياتنا يا روان.. ده اليوم اللي الدنيا ضحكتلنا فيه لما جيتي. أحلى أخت وصاحبة في الدنيا كلها. أحبك للأبد يا حبيبة قلب أخوكي. 🤍
+            يا روان يا غالية، يا أحلى وأطيب بنت خال في الدنيا كلها! ❤️ النهاردة مش أي يوم، ده اليوم اللي نورتي فيه الدنيا وزودتي عيلتنا حتة سكر. كل سنة وأنتِ طيبة وبألف خير وصحة وسعادة. إنتِ مش مجرد بنت خالي، إنتِ أختي وصاحبتي الجدعة اللي دايماً وجودها بيعمل بهجة وفرحة في أي مكان تكون فيه. 🌟 بجد الأيام بتعدي وكل سنة بتكبري فيها بتثبتيلي قد إيه إنتِ شخصية جميلة من جوه ومن بره وتستاهلي كل حاجة حلوة في الدنيا. كل سنة وأنتِ الضحكة اللي مش بتفارق عيلتنا، وكل سنة واحنا دايماً متجمعين على حسك ومبسوطين بوجودك وسطينا، ويارب دايماً منورة حياتنا! 🎉🥳🎁🎈
         </p>
         
         <button class="btn-outline" onclick="nextSec('sec-intro', 'sec-letter')">💌 READ MY LETTER 💌</button>
     </div>
 
+    <!-- 4. شاشة الرسالة -->
     <div id="sec-letter" class="section" style="padding: 20px; max-width: 650px; margin: 0 auto;">
         <h1 style="font-size: 3rem; margin-bottom: 40px;">Happy Birthday</h1>
         <p id="typewriter-text" style="font-family: 'Cairo', sans-serif; font-size: 1.15rem; line-height: 2; text-align: right; min-height: 250px;" dir="rtl"></p>
         <button class="btn-outline hidden-btn" id="btn-memories" onclick="nextSec('sec-letter', 'sec-memories')">OUR MEMORIES (Page 1) ☁️</button>
     </div>
 
+    <!-- 5. شاشة الذكريات -->
     <div id="sec-memories" class="section">
         <h1 style="font-size: 3rem; margin-bottom: 5px;">Our Memories</h1>
         <p class="subtitle" style="text-transform: lowercase;">✨ Page 1 - every moment captured ✨</p>
@@ -235,12 +240,14 @@
         <button class="btn-outline" onclick="nextSec('sec-memories', 'sec-video')">NEXT PAGE 🎬</button>
     </div>
 
+    <!-- 6. شاشة الفيديو -->
     <div id="sec-video" class="section">
         <h1 style="font-size: 3rem; margin-bottom: 5px;">A Moment For You</h1>
         <p class="subtitle" style="text-transform: lowercase;">✨ a special video message ✨</p>
         
         <div style="max-width: 500px; width: 90%; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border-radius: 10px; overflow: hidden; border: 2px solid rgba(255,255,255,0.2);">
-            <video controls style="width: 100%; display: block;">
+            <!-- الفيديو واخد ID عشان نتحكم فيه -->
+            <video id="myVideo" controls style="width: 100%; display: block;">
                 <source src="video1.mp4" type="video/mp4">
             </video>
         </div>
@@ -248,20 +255,19 @@
         <button class="btn-outline" onclick="nextSec('sec-video', 'sec-wishes')">BIRTHDAY WISHES ✨</button>
     </div>
 
+    <!-- 7. شاشة الأمنيات -->
     <div id="sec-wishes" class="section" style="padding: 20px; max-width: 600px; margin: 0 auto;">
         <h1 style="font-size: 3rem; margin-bottom: 30px;">Birthday Wishes</h1>
         <p style="font-family: 'Cairo', sans-serif; font-weight: 600; font-size: 1.2rem; text-align: left; width: 100%;">Happy birthday, best sister 🤍</p>
         
         <p style="font-family: 'Cairo', sans-serif; font-size: 1.1rem; line-height: 2; text-align: right; color: var(--text-muted);" dir="rtl">
-            أتمنى لك السعادة، والصحة، والنجاح، وكل النعم في عامك الجديد.
-            أتمنى أن تتحقق كل أحلامك يا أحلى أخت، وتُملأ أيامك بالفرح، ويكون قلبك دائمًا في سلام.
-            شكراً لكونك أختي وصاحبتي وكل حاجة حلوة في حياتنا. أتمنى أن يجلب لك هذا اليوم المميز كل ما تتمنيه.
-            ابقي سعيدة، ومشرقة دائمًا. أخوكي اللي بيحبك. 🤍
+           أما بقى أمنيتي ليكي في عيد ميلادك السنة دي، فبدعي ربنا من كل قلبي إنها تكون سنة مختلفة ومميزة، وتكون بداية لأيام كلها خير وفرحة. 🙏✨ بتمنى إن ربنا يفتحلك بيبان السعادة والنجاح، ويحققلك كل خطوة بتحلمي بيها وتوصلي لكل اللي نفسك فيه وأكتر كمان. يارب السنة دي تكون مليانة مفاجآت حلوة، وراحة بال، وأيام كلها ضحك وانبساط تعوضك عن أي تعب. 🌸 ربنا يبعد عنك أي زعل أو ضيقة، ويخليكي لينا، وتفضلي دايماً ناجحة ومحققة كل طموحاتك. روحي يا روان ربنا يسعد قلبك الطيب ده ويرزقك أضعاف أضعاف ما بتتمني وتفضل روحك الحلوة دي منورة دايماً! 💖🚀👑🎂
         </p>
         
         <button class="btn-outline" onclick="nextSec('sec-wishes', 'sec-outro')">ONE MORE THING ✨</button>
     </div>
 
+    <!-- 8. شاشة النهاية -->
     <div id="sec-outro" class="section">
         <h1 id="outro-title" style="font-size: 3.5rem; transition: opacity 1s ease-in-out;">Happy Birthday</h1>
         
@@ -274,6 +280,7 @@
         <button class="btn-outline" onclick="location.reload()">↻ REPLAY FROM START</button>
     </div>
 
+    <!-- الجافاسكريبت -->
     <script>
         // النجوم
         const starsContainer = document.getElementById('stars');
@@ -309,6 +316,7 @@
             }
         }
 
+        // تشغيل الموسيقى إجبارياً بعد فتح الهدية
         function openGift(el) {
             confetti({ particleCount: 150, spread: 80, origin: { y: 0.5 }, colors: ['#ffffff', '#ff7eb3'] });
             
@@ -331,6 +339,29 @@
                 audio.pause(); musicBtn.classList.remove('playing');
             }
         }
+
+        // ==========================================
+        // برمجة إيقاف الموسيقى عند تشغيل الفيديو
+        // ==========================================
+        const myVideo = document.getElementById('myVideo');
+        const bgMusic = document.getElementById('bgMusic');
+        const musicBtn = document.getElementById('music-toggle');
+
+        myVideo.addEventListener('play', function() {
+            bgMusic.pause();
+            musicBtn.classList.remove('playing');
+        });
+
+        myVideo.addEventListener('pause', function() {
+            bgMusic.play();
+            musicBtn.classList.add('playing');
+        });
+
+        myVideo.addEventListener('ended', function() {
+            bgMusic.play();
+            musicBtn.classList.add('playing');
+        });
+        // ==========================================
 
         const letterText = "عيد ميلاد سعيد يا أحلى أخت في الدنيا 🤍\n\nكل سنة وأنتِ طيبة، كل سنة وأنتِ منورة حياتنا ومحليا أيامنا. اليوم ده من أجمل أيام السنة عشان ده اليوم اللي جيتي فيه الدنيا ونورتي بيتنا.\n\nربنا يخليكي ليا ومايحرمنيش منك أبداً يا سندي وأختي الجميلة.\n\nبحبك جداً يا أحلى روان ❤️";
         let charIndex = 0;
