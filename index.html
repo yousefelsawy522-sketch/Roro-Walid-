@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Her Special Day</title>
-    <!-- استدعاء الخطوط الكلاسيكية -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <style>
         /* الألوان والخلفية الداكنة الفخمة */
@@ -25,7 +25,7 @@
             text-align: center;
         }
 
-        /* تأثير النجوم المضيئة في الخلفية */
+        /* تأثير النجوم المضيئة */
         .stars-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: -1;
@@ -39,34 +39,36 @@
             50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 8px white; }
         }
 
-        /* نظام الشاشات */
+        /* نظام الشاشات والانتقال الناعم */
         .section {
             min-height: 100vh; display: flex; flex-direction: column;
             align-items: center; justify-content: center; width: 100%;
             position: absolute; top: 0; left: 0;
-            opacity: 0; pointer-events: none; transition: opacity 1.2s ease-in-out;
+            opacity: 0; pointer-events: none; transition: opacity 1.5s ease-in-out;
+            z-index: 1;
         }
         .section.active {
-            opacity: 1; pointer-events: auto; position: relative;
+            opacity: 1; pointer-events: auto; position: relative; z-index: 10;
         }
 
-        /* شكل الزراير الشفاف */
+        /* شكل الزراير */
         .btn-outline {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.5);
             color: white; padding: 12px 30px; border-radius: 50px;
             font-family: 'Cairo', sans-serif; font-size: 0.85rem; font-weight: 600;
             cursor: pointer; letter-spacing: 2px; transition: 0.4s;
-            text-transform: uppercase; margin-top: 30px;
+            text-transform: uppercase; margin-top: 30px; position: relative; z-index: 20;
         }
-        .btn-outline:hover { background: rgba(255, 255, 255, 0.2); }
+        .btn-outline:hover { background: rgba(255, 255, 255, 0.2); transform: scale(1.05); }
 
-        /* النصوص الصغيرة */
+        /* النصوص */
         .subtitle {
             font-family: 'Cairo', sans-serif; font-size: 0.8rem;
             letter-spacing: 3px; color: var(--text-muted); text-transform: uppercase;
-            margin-bottom: 20px;
+            margin-bottom: 20px; position: relative; z-index: 20;
         }
+        .main-title { font-size: 4rem; margin: 10px 0; position: relative; z-index: 20; text-shadow: 0 5px 15px rgba(0,0,0,0.5); }
 
         /* حقل الباسورد */
         .pass-input {
@@ -75,19 +77,47 @@
             font-family: 'Cairo', sans-serif; font-size: 1.1rem; outline: none;
             width: 250px; margin-top: 20px; transition: 0.3s;
         }
-        .pass-input:focus { border-color: white; }
 
         /* حركة الهدية */
         .gift-icon {
             font-size: 6rem; margin: 20px 0; cursor: pointer;
-            animation: floatGift 3s infinite ease-in-out;
+            animation: pulseGift 2s infinite ease-in-out; transition: 0.3s;
         }
-        @keyframes floatGift {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-15px) scale(1.05); }
+        .gift-icon:hover { transform: scale(1.1) rotate(5deg); }
+        @keyframes pulseGift {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(255,255,255,0.2)); }
+            50% { transform: scale(1.05); filter: drop-shadow(0 0 20px rgba(255,255,255,0.6)); }
         }
 
-        /* صور البولارويد العشوائية */
+        /* ==============================================
+           صور الجنب (اللي في صفحة Your Special Day)
+           ============================================== */
+        .side-photo {
+            position: absolute; background: white; padding: 5px 5px 15px 5px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4); border-radius: 2px;
+            width: 75px; z-index: 5; opacity: 0.8;
+            animation: floatSide 4s infinite ease-in-out alternate;
+        }
+        .side-photo img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
+        
+        /* أماكن صور الجنب العشوائية */
+        .sp-1 { top: 15%; left: 5%; --rot: -15deg; animation-delay: 0s; }
+        .sp-2 { top: 45%; left: 10%; --rot: 10deg; animation-delay: 1s; }
+        .sp-3 { top: 75%; left: 5%; --rot: -5deg; animation-delay: 0.5s; }
+        .sp-4 { top: 20%; right: 5%; --rot: 15deg; animation-delay: 0.2s; }
+        .sp-5 { top: 50%; right: 8%; --rot: -10deg; animation-delay: 1.2s; }
+        .sp-6 { top: 80%; right: 5%; --rot: 8deg; animation-delay: 0.8s; }
+
+        @keyframes floatSide {
+            0% { transform: translateY(0) rotate(var(--rot)); }
+            100% { transform: translateY(-15px) rotate(calc(var(--rot) + 5deg)); }
+        }
+        
+        @media(max-width: 500px) {
+            .side-photo { width: 60px; opacity: 0.6; }
+        }
+
+        /* شبكة الذكريات (Polaroid Grid) */
         .polaroid-grid {
             display: flex; flex-wrap: wrap; justify-content: center; gap: 15px;
             max-width: 700px; margin: 0 auto; padding: 20px;
@@ -95,15 +125,16 @@
         .polaroid {
             background: white; padding: 8px 8px 30px 8px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.5); border-radius: 2px;
-            width: calc(25% - 20px); min-width: 100px;
+            width: calc(25% - 20px); min-width: 90px;
+            transition: 0.3s;
         }
-        @media(max-width: 600px) { .polaroid { width: calc(33% - 20px); } }
         .polaroid img { width: 100%; aspect-ratio: 1/1.1; object-fit: cover; }
+        .polaroid:hover { transform: scale(1.1) !important; z-index: 100; }
 
         .hidden-btn { opacity: 0; pointer-events: none; transition: 1.5s; }
         .hidden-btn.show { opacity: 1; pointer-events: auto; }
 
-        /* زرار الموسيقى العائم */
+        /* زرار الموسيقى */
         #music-toggle {
             position: fixed; top: 20px; right: 20px; z-index: 1000;
             background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3);
@@ -116,13 +147,8 @@
 </head>
 <body>
 
-    <!-- ملف الموسيقى الأساسي -->
     <audio id="bgMusic" src="موسيقى.mp3" loop></audio>
-
-    <!-- النجوم المضيئة في الخلفية -->
     <div class="stars-container" id="stars"></div>
-
-    <!-- زرار الموسيقى اللي هيظهر بعد الباسورد -->
     <div id="music-toggle" onclick="toggleMusic()">🎵</div>
 
     <!-- ==========================================
@@ -148,28 +174,35 @@
          ========================================== -->
     <div id="sec-gift" class="section">
         <p class="subtitle">✨ ADA SESUATU UNTUKMU ✨</p>
-        <div class="gift-icon" onclick="openGift()">🎁</div>
+        <div class="gift-icon" onclick="openGift(this)">🎁</div>
         <p style="font-family: 'Cairo', sans-serif; font-size: 0.85rem; color: var(--text-muted);">انقري لفتح هديتك وتشغيل الموسيقى 🎵</p>
     </div>
 
     <!-- ==========================================
-         3. شاشة الافتتاحية
+         3. شاشة الافتتاحية (فيها صور الجنب المطلوبة!)
          ========================================== -->
     <div id="sec-intro" class="section">
+        <!-- صور البولارويد المتطورة يمين وشمال -->
+        <div class="side-photo sp-1"><img src="photo1.jpg"></div>
+        <div class="side-photo sp-2"><img src="photo2.jpg"></div>
+        <div class="side-photo sp-3"><img src="photo3.jpg"></div>
+        <div class="side-photo sp-4"><img src="photo4.jpg"></div>
+        <div class="side-photo sp-5"><img src="photo5.jpg"></div>
+        <div class="side-photo sp-6"><img src="photo6.jpg"></div>
+
         <p class="subtitle">✨ A SPECIAL LETTER FOR YOU ✨</p>
-        <h1 style="font-size: 4rem; margin: 10px 0;">Your<br>Special Day</h1>
-        <p style="font-family: 'Cairo', sans-serif; font-size: 1rem; color: var(--text-muted); font-style: italic;">Created with love, for my sister</p>
+        <h1 class="main-title">Your<br>Special Day</h1>
+        <p style="font-family: 'Cairo', sans-serif; font-size: 1rem; color: var(--text-muted); font-style: italic; position: relative; z-index: 20;">Created with love, for my sister</p>
+        
         <button class="btn-outline" onclick="nextSec('sec-intro', 'sec-letter')">💌 READ MY LETTER 💌</button>
     </div>
 
     <!-- ==========================================
-         4. شاشة الرسالة (كلام الأخ لأخته)
+         4. شاشة الرسالة 
          ========================================== -->
     <div id="sec-letter" class="section" style="padding: 20px; max-width: 650px; margin: 0 auto;">
         <h1 style="font-size: 3rem; margin-bottom: 40px;">Happy Birthday</h1>
-        
         <p id="typewriter-text" style="font-family: 'Cairo', sans-serif; font-size: 1.15rem; line-height: 2; text-align: right; min-height: 250px;" dir="rtl"></p>
-        
         <button class="btn-outline hidden-btn" id="btn-memories" onclick="nextSec('sec-letter', 'sec-memories')">OUR MEMORIES ☁️</button>
     </div>
 
@@ -181,14 +214,14 @@
         <p class="subtitle" style="text-transform: lowercase;">✨ every moment captured in lens ✨</p>
         
         <div class="polaroid-grid">
-            <div class="polaroid" style="transform: rotate(-6deg);"><img src="photo1.jpg"></div>
-            <div class="polaroid" style="transform: rotate(4deg);"><img src="photo2.jpg"></div>
-            <div class="polaroid" style="transform: rotate(-3deg);"><img src="photo3.jpg"></div>
-            <div class="polaroid" style="transform: rotate(7deg);"><img src="photo4.jpg"></div>
-            <div class="polaroid" style="transform: rotate(-5deg);"><img src="photo5.jpg"></div>
-            <div class="polaroid" style="transform: rotate(2deg);"><img src="photo6.jpg"></div>
-            <div class="polaroid" style="transform: rotate(6deg);"><img src="photo7.jpg"></div>
-            <div class="polaroid" style="transform: rotate(-4deg);"><img src="photo8.jpg"></div>
+            <div class="polaroid" style="transform: rotate(-6deg);"><img src="photo7.jpg"></div>
+            <div class="polaroid" style="transform: rotate(4deg);"><img src="photo8.jpg"></div>
+            <div class="polaroid" style="transform: rotate(-3deg);"><img src="photo9.jpg"></div>
+            <div class="polaroid" style="transform: rotate(7deg);"><img src="photo10.jpg"></div>
+            <div class="polaroid" style="transform: rotate(-5deg);"><img src="photo11.jpg"></div>
+            <div class="polaroid" style="transform: rotate(2deg);"><img src="photo12.jpg"></div>
+            <div class="polaroid" style="transform: rotate(6deg);"><img src="photo13.jpg"></div>
+            <div class="polaroid" style="transform: rotate(-4deg);"><img src="photo14.jpg"></div>
         </div>
 
         <button class="btn-outline" onclick="nextSec('sec-memories', 'sec-video')">WATCH VIDEO 🎬</button>
@@ -201,7 +234,7 @@
         <h1 style="font-size: 3rem; margin-bottom: 5px;">A Moment For You</h1>
         <p class="subtitle" style="text-transform: lowercase;">✨ a special video message ✨</p>
         
-        <div style="max-width: 500px; width: 90%; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border-radius: 10px; overflow: hidden;">
+        <div style="max-width: 500px; width: 90%; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border-radius: 10px; overflow: hidden; border: 2px solid rgba(255,255,255,0.2);">
             <video controls style="width: 100%; display: block;">
                 <source src="video1.mp4" type="video/mp4">
             </video>
@@ -211,7 +244,7 @@
     </div>
 
     <!-- ==========================================
-         7. شاشة الأمنيات (أخ لأخته)
+         7. شاشة الأمنيات 
          ========================================== -->
     <div id="sec-wishes" class="section" style="padding: 20px; max-width: 600px; margin: 0 auto;">
         <h1 style="font-size: 3rem; margin-bottom: 30px;">Birthday Wishes</h1>
@@ -243,10 +276,10 @@
     </div>
 
     <!-- ==========================================
-         أكواد الجافاسكريبت
+         البرمجة
          ========================================== -->
     <script>
-        // 1. توليد النجوم المضيئة في الخلفية
+        // النجوم
         const starsContainer = document.getElementById('stars');
         for (let i = 0; i < 70; i++) {
             let star = document.createElement('div');
@@ -260,68 +293,53 @@
             starsContainer.appendChild(star);
         }
 
-        // 2. دالة التنقل بين الشاشات ببطء ونعومة (Fade effect)
         function nextSec(currentId, nextId) {
             document.getElementById(currentId).classList.remove('active');
             setTimeout(() => {
                 document.getElementById(nextId).classList.add('active');
-                
-                if (nextId === 'sec-letter') {
-                    startTypewriter();
-                }
-                if (nextId === 'sec-outro') {
-                    startOutroAnimation();
-                }
+                if (nextId === 'sec-letter') startTypewriter();
+                if (nextId === 'sec-outro') startOutroAnimation();
             }, 1000); 
         }
 
-        // 3. فحص الباسورد
         function checkPassword() {
             let pass = document.getElementById('pass-input').value.toLowerCase();
             if (pass.includes('31') || pass.includes('٣١') || pass.includes('r') || pass.includes('2014')) {
                 document.getElementById('error-msg').style.display = 'none';
-                
-                // إظهار زرار الموسيقى العائم بعد الدخول
                 document.getElementById('music-toggle').style.display = 'flex';
-                
                 nextSec('sec-password', 'sec-gift');
             } else {
                 document.getElementById('error-msg').style.display = 'block';
             }
         }
 
-        // 4. دالة فتح الهدية وتشغيل الموسيقى
-        function openGift() {
+        // فرقعة الهدية قبل الفتح
+        function openGift(el) {
+            // انيميشن الفرقعة
+            confetti({ particleCount: 150, spread: 80, origin: { y: 0.5 }, colors: ['#ffffff', '#ff7eb3'] });
+            
             let audio = document.getElementById('bgMusic');
             let musicBtn = document.getElementById('music-toggle');
-            
-            // محاولة التشغيل
             let playPromise = audio.play();
             if (playPromise !== undefined) {
-                playPromise.then(() => {
-                    musicBtn.classList.add('playing');
-                }).catch(error => {
-                    console.log('المتصفح منع التشغيل التلقائي');
-                });
+                playPromise.then(() => { musicBtn.classList.add('playing'); }).catch(e => console.log('Auto-play prevented'));
             }
-            nextSec('sec-gift', 'sec-intro');
+            
+            setTimeout(() => {
+                nextSec('sec-gift', 'sec-intro');
+            }, 800); // يستنى الفرقعة تخلص وبعدين ينقل للصفحة
         }
 
-        // 5. زرار التحكم اليدوي في الموسيقى (الزرار العائم)
         function toggleMusic() {
             let audio = document.getElementById('bgMusic');
             let musicBtn = document.getElementById('music-toggle');
-            
             if (audio.paused) {
-                audio.play();
-                musicBtn.classList.add('playing');
+                audio.play(); musicBtn.classList.add('playing');
             } else {
-                audio.pause();
-                musicBtn.classList.remove('playing');
+                audio.pause(); musicBtn.classList.remove('playing');
             }
         }
 
-        // 6. الكتابة الآلية للرسالة (كلام أخ لأخته)
         const letterText = "عيد ميلاد سعيد يا أحلى أخت في الدنيا 🤍\n\nكل سنة وأنتِ طيبة، كل سنة وأنتِ منورة حياتنا ومحليا أيامنا. اليوم ده من أجمل أيام السنة عشان ده اليوم اللي جيتي فيه الدنيا ونورتي بيتنا.\n\nربنا يخليكي ليا ومايحرمنيش منك أبداً يا سندي وأختي الجميلة.\n\nبحبك جداً يا أحلى روان ❤️";
         let charIndex = 0;
         let isTyping = false;
@@ -334,13 +352,9 @@
             function type() {
                 if (charIndex < letterText.length) {
                     let char = letterText.charAt(charIndex);
-                    if (char === '\n') {
-                        document.getElementById('typewriter-text').innerHTML += '<br>';
-                    } else {
-                        document.getElementById('typewriter-text').innerHTML += char;
-                    }
+                    document.getElementById('typewriter-text').innerHTML += (char === '\n') ? '<br>' : char;
                     charIndex++;
-                    setTimeout(type, 50); // سرعة الكتابة
+                    setTimeout(type, 50);
                 } else {
                     document.getElementById('btn-memories').classList.add('show');
                 }
@@ -348,7 +362,6 @@
             setTimeout(type, 1000); 
         }
 
-        // 7. حركة النص في شاشة النهاية المتغيرة (كلام يناسب الأخت)
         const outroTitles = ["Happy Birthday", "Best Sister Ever", "Always Here For You"];
         let titleIdx = 0;
         function startOutroAnimation() {
