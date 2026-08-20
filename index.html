@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>&#1605;&#1601;&#1575;&#1580;&#1571;&#1577; &#1585;&#1608;&#1575;&#1606;</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital@1&family=Cairo:wght@600;700&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        /* =========================================
+           &#1575;&#1604;&#1571;&#1604;&#1608;&#1575;&#1606; &#1576;&#1606;&#1575;&#1578;&#1610; &#1608;&#1593;&#1610;&#1583; &#1605;&#1610;&#1604;&#1575;&#1583; (Pink & Pastel)
+           ========================================= */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #ffe6ea 0%, #ffb3c6 100%);
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --primary-pink: #ff4d79;
+            --secondary-pink: #ff7eb3;
+            --text-dark: #5c2a38;
+            --text-light: #8e5565;
+            --gold: #d4af37;
+        }
+
+        body {
+            margin: 0; padding: 0; font-family: 'Cairo', sans-serif;
+            background: var(--bg-gradient); color: var(--text-dark);
+            overflow-x: hidden; width: 100%; min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .hidden { display: none !important; }
+        .fade-in { animation: fadeIn 0.8s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* &#1575;&#1604;&#1588;&#1575;&#1588;&#1575;&#1578; &#1575;&#1604;&#1571;&#1587;&#1575;&#1587;&#1610;&#1577; */
+        .screen {
+            min-height: 100vh; width: 100%; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; position: fixed;
+            top: 0; left: 0; z-index: 10; background: var(--bg-gradient);
+        }
+
+        /* 1. &#1588;&#1575;&#1588;&#1577; &#1575;&#1604;&#1602;&#1601;&#1604; */
+        .lock-box { background: var(--card-bg); padding: 40px 20px; border-radius: 30px; box-shadow: 0 10px 30px rgba(255, 77, 121, 0.2); width: 85%; max-width: 350px; text-align: center; border: 2px solid white; }
+        .lock-icon { font-size: 4rem; margin-bottom: 15px; }
+        .lock-text { color: var(--primary-pink); font-size: 1.2rem; margin-bottom: 20px; font-weight: bold; }
+        .lock-input { width: 90%; padding: 15px; background: white; border: 2px solid var(--secondary-pink); color: var(--text-dark); text-align: center; border-radius: 15px; font-size: 1.2rem; margin-bottom: 20px; outline: none; box-sizing: border-box; }
+        .pink-btn { background: linear-gradient(45deg, var(--primary-pink), var(--secondary-pink)); color: white; border: none; padding: 15px 30px; border-radius: 50px; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; box-shadow: 0 5px 15px rgba(255, 77, 121, 0.4); transition: 0.3s; }
+        
+        /* 2. &#1588;&#1575;&#1588;&#1577; &#1575;&#1604;&#1578;&#1581;&#1605;&#1610;&#1604; */
+        .cake-icon { font-size: 6rem; margin-bottom: 10px; animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .loading-name { color: var(--primary-pink); font-size: 3rem; margin: 0 0 20px 0; font-family: 'Playfair Display', serif; }
+        .progress-bar-bg { background: white; border-radius: 10px; height: 12px; width: 70%; overflow: hidden; margin-bottom: 10px; border: 1px solid var(--secondary-pink); }
+        .progress-fill { background: var(--primary-pink); height: 100%; width: 0%; transition: width 0.2s; }
+
+        /* 3. &#1588;&#1575;&#1588;&#1577; &#1573;&#1580;&#1576;&#1575;&#1585; &#1578;&#1588;&#1594;&#1610;&#1604; &#1575;&#1604;&#1589;&#1608;&#1578; */
+        .audio-lock-box { background: var(--card-bg); padding: 30px 20px; border-radius: 25px; text-align: center; width: 85%; max-width: 380px; box-shadow: 0 10px 30px rgba(255,77,121,0.2); border: 2px solid white;}
+        .audio-lock-box h2 { color: var(--primary-pink); margin-top: 0; }
+        .audio-lock-box p { color: var(--text-light); font-size: 1rem; margin-bottom: 20px; font-weight: bold;}
+        audio { width: 100%; border-radius: 50px; outline: none; }
+        
+        /* 4. &#1575;&#1604;&#1589;&#1601;&#1581;&#1577; &#1575;&#1604;&#1585;&#1574;&#1610;&#1587;&#1610;&#1577; */
+        #main-screen { position: relative; z-index: 5; padding: 20px 10px 80px 10px; display: flex; flex-direction: column; align-items: center; width: 100%; box-sizing: border-box;}
+        
+        /* &#1588;&#1585;&#1610;&#1591; &#1575;&#1604;&#1589;&#1608;&#1578; &#1575;&#1604;&#1579;&#1575;&#1576;&#1578; &#1601;&#1608;&#1602; */
+        .sticky-audio { position: sticky; top: 10px; width: 95%; max-width: 450px; background: rgba(255,255,255,0.9); padding: 10px; border-radius: 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 100; margin-bottom: 20px; border: 2px solid var(--secondary-pink); display: flex; justify-content: center; box-sizing: border-box;}
+        .sticky-audio audio { width: 100%; height: 40px; }
+
+        /* &#1575;&#1604;&#1603;&#1585;&#1608;&#1578; */
+        .card { background: var(--card-bg); border-radius: 20px; padding: 25px 20px; width: 95%; max-width: 450px; margin-bottom: 25px; border: 2px solid white; box-shadow: 0 8px 25px rgba(255, 77, 121, 0.15); box-sizing: border-box; backdrop-filter: blur(10px); }
+        .card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px dashed var(--secondary-pink); padding-bottom: 10px; margin-bottom: 20px; }
+        .card-title { color: var(--primary-pink); font-size: 1.3rem; margin: 0; font-weight: bold; }
+        
+        /* &#1575;&#1604;&#1603;&#1578;&#1575;&#1576;&#1577; &#1575;&#1604;&#1570;&#1604;&#1610;&#1577; */
+        .typewriter-text { font-size: 1.15rem; line-height: 1.8; color: var(--text-dark); text-align: right; display: none; min-height: 50px; font-weight: 600;}
+        .show-msg-btn { background: white; color: var(--primary-pink); border: 2px solid var(--primary-pink); padding: 10px 20px; border-radius: 50px; font-size: 1rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px;}
+        .show-msg-btn:hover { background: var(--primary-pink); color: white; }
+
+        /* =========================================
+           &#1578;&#1589;&#1605;&#1610;&#1605; &#1571;&#1604;&#1576;&#1608;&#1605; &#1575;&#1604;&#1581;&#1576;&#1604; &#1608;&#1575;&#1604;&#1589;&#1608;&#1585; &#1575;&#1604;&#1605;&#1578;&#1593;&#1604;&#1602;&#1577; (&#1575;&#1604;&#1605;&#1591;&#1608;&#1585;)
+           ========================================= */
+        .rope-album-container { display: flex; flex-direction: column; gap: 15px; margin-top: 10px; }
+        .rope-row { position: relative; display: flex; justify-content: space-around; padding-top: 10px; }
+        .rope-line { position: absolute; top: 0; left: -10px; right: -10px; height: 3px; background: repeating-linear-gradient(45deg, var(--gold), var(--gold) 5px, #b58b22 5px, #b58b22 10px); border-radius: 2px; z-index: 1; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .photo-hanging { position: relative; width: 30%; z-index: 2; animation: swing 3s ease-in-out infinite alternate; transform-origin: top center; }
+        .photo-hanging:nth-child(2) { animation-delay: 0.5s; }
+        .photo-hanging:nth-child(3) { animation-delay: 1.2s; }
+        .clip { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); width: 8px; height: 18px; background-color: var(--primary-pink); border: 2px solid white; border-radius: 4px; z-index: 3; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .photo-hanging img { width: 100%; height: 110px; object-fit: cover; border-radius: 8px; border: 3px solid white; box-shadow: 0 5px 15px rgba(255, 77, 121, 0.2); transition: opacity 0.5s ease-in-out; }
+        @keyframes swing { 0% { transform: rotate(3deg); } 100% { transform: rotate(-3deg); } }
+
+        /* &#1575;&#1604;&#1601;&#1610;&#1583;&#1610;&#1608;&#1607;&#1575;&#1578; &#1608;&#1575;&#1604;&#1582;&#1578;&#1605; */
+        .video-box { width: 100%; margin-top: 15px; }
+        .video-box video { width: 100%; border-radius: 12px; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); object-fit: cover;}
+
+        .seal-btn { background: transparent; border: 2px dashed var(--primary-pink); border-radius: 20px; padding: 20px; cursor: pointer; text-align: center; }
+        .seal-circle { width: 70px; height: 70px; background: linear-gradient(135deg, var(--primary-pink), var(--secondary-pink)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 15px auto; color: white; box-shadow: 0 0 15px var(--primary-pink); animation: pulseSeal 2s infinite;}
+        @keyframes pulseSeal { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
+        /* 5. &#1606;&#1575;&#1601;&#1584;&#1577; &#1575;&#1604;&#1585;&#1587;&#1575;&#1604;&#1577; &#1575;&#1604;&#1591;&#1608;&#1610;&#1604;&#1577; */
+        #message-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 230, 234, 0.9); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; backdrop-filter: blur(5px); }
+        .msg-box { background: white; padding: 30px 20px; border-radius: 25px; border: 3px solid var(--primary-pink); max-height: 85vh; overflow-y: auto; width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(255, 77, 121, 0.3); }
+        .msg-box h2 { color: var(--primary-pink); margin-top: 0; text-align: center; border-bottom: 2px dashed var(--secondary-pink); padding-bottom: 15px;}
+    </style>
+</head>
+<body>
+
+    <!-- ==========================================
+         1. &#1588;&#1575;&#1588;&#1577; &#1575;&#1604;&#1602;&#1601;&#1604; 
+         ========================================== -->
+    <div id="lock-screen" class="screen fade-in">
+        <div class="lock-box">
+            <div class="lock-icon">&#127872;</div>
+            <div class="lock-text">&#1575;&#1603;&#1578;&#1576;&#1610; &#1593;&#1610;&#1583; &#1605;&#1610;&#1604;&#1575;&#1583; &#1575;&#1604;&#1602;&#1605;&#1585; &#1575;&#1605;&#1578;&#1609;.. &#128477;&#65039;</div>
+            <input type="text" id="pass-input" class="lock-input" placeholder="&#1605;&#1579;&#1575;&#1604;: 31/8" dir="ltr">
+            <button class="pink-btn" onclick="checkPass()">&#1575;&#1601;&#1578;&#1581;&#1610; &#1575;&#1604;&#1605;&#1601;&#1575;&#1580;&#1571;&#1577; &#128150;</button>
+            <p id="error-text" style="color: red; margin-top: 15px; font-size: 0.9rem; display: none; font-weight: bold;">&#1575;&#1604;&#1585;&#1605;&#1586; &#1594;&#1604;&#1591; &#1610;&#1575; &#1581;&#1576;&#1610;&#1576;&#1578;&#1610;&#1548; &#1580;&#1585;&#1576;&#1610; &#1578;&#1575;&#1606;&#1610;!</p>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         2. &#1588;&#1575;&#1588;&#1577; &#1575;&#1604;&#1578;&#1581;&#1605;&#1610;&#1604;
+         ========================================== -->
+    <div id="loading-screen" class="screen hidden">
+        <div class="cake-icon">&#127874;</div>
+        <h2 style="color: var(--text-dark);">&#1593;&#1610;&#1583; &#1605;&#1610;&#1604;&#1575;&#1583; &#1587;&#1593;&#1610;&#1583;</h2>
+        <h1 class="loading-name">RAWAN</h1>
+        <div class="progress-bar-bg"><div class="progress-fill" id="loading-fill"></div></div>
+        <div style="color: var(--primary-pink); font-weight: bold; font-size: 1.2rem;" id="loading-text">0%</div>
+    </div>
+
+    <!-- ==========================================
+         3. &#1588;&#1575;&#1588;&#1577; &#1573;&#1580;&#1576;&#1575;&#1585; &#1578;&#1588;&#1594;&#1610;&#1604; &#1575;&#1604;&#1589;&#1608;&#1578;
+         ========================================== -->
+    <div id="audio-lock-screen" class="screen hidden">
+        <div class="audio-lock-box fade-in">
+            <h2>&#1582;&#1591;&#1608;&#1577; &#1571;&#1582;&#1610;&#1585;&#1577;! &#127911;</h2>
+            <p>&#1593;&#1604;&#1588;&#1575;&#1606; &#1575;&#1604;&#1605;&#1601;&#1575;&#1580;&#1571;&#1577; &#1578;&#1603;&#1605;&#1604;&#1548; &#1575;&#1590;&#1594;&#1591;&#1610; &#1593;&#1604;&#1609; &#1586;&#1585;&#1575;&#1585; &#1575;&#1604;&#1578;&#1588;&#1594;&#1610;&#1604; &#1604;&#1604;&#1605;&#1602;&#1591;&#1593; &#1575;&#1604;&#1589;&#1608;&#1578;&#1610; &#1575;&#1604;&#1571;&#1608;&#1604;.. &#1608;&#1575;&#1604;&#1605;&#1608;&#1602;&#1593; &#1607;&#1610;&#1601;&#1578;&#1581; &#1604;&#1608;&#1581;&#1583;&#1607; &#1576;&#1593;&#1583;&#1607;&#1575; &#128150;</p>
+            <audio id="main-audio" controls controlsList="nodownload">
+                <source src="&#1605;&#1608;&#1587;&#1610;&#1602;&#1609;.mp3" type="audio/mpeg">
+                &#1605;&#1578;&#1589;&#1601;&#1581;&#1603; &#1604;&#1575; &#1610;&#1583;&#1593;&#1605; &#1578;&#1588;&#1594;&#1610;&#1604; &#1575;&#1604;&#1589;&#1608;&#1578;.
+            </audio>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         4. &#1575;&#1604;&#1589;&#1601;&#1581;&#1577; &#1575;&#1604;&#1585;&#1574;&#1610;&#1587;&#1610;&#1577; 
+         ========================================== -->
+    <div id="main-screen" class="hidden">
+        
+        <div class="sticky-audio fade-in">
+            <audio id="sticky-audio-player" controls loop controlsList="nodownload">
+                <source src="&#1605;&#1608;&#1587;&#1610;&#1602;&#1609;.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+
+        <div class="card fade-in">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <h1 style="margin: 0; color: var(--primary-pink); font-family: 'Playfair Display', serif; font-size: 3rem;">Rawan</h1>
+                <!-- &#1578;&#1605; &#1578;&#1593;&#1583;&#1610;&#1604; &#1575;&#1604;&#1587;&#1606;&#1577; &#1604;&#1600; 2014 -->
+                <div style="background: var(--primary-pink); color: white; padding: 5px 20px; border-radius: 20px; display: inline-block; margin-top: 10px; font-weight: bold; font-size: 1.1rem;">&#127874; 2014 • 08 • 31 &#127872;</div>
+            </div>
+            
+            <p id="text-1" class="typewriter-text"></p>
+            <button class="show-msg-btn" id="btn-1" onclick="typeWriter('text-1', '&#1593;&#1575;&#1605;&#1603; &#1575;&#1604;&#1580;&#1583;&#1610;&#1583; &#1608;&#1593;&#1605;&#1585;&#1610; &#1605;&#1575; &#1610;&#1603;&#1605;&#1604;&#1608;&#1588; &#1594;&#1610;&#1585; &#1576;&#1606;&#1608;&#1585; &#1593;&#1610;&#1606;&#1610;&#1603;&#1610; &#1608; &#1590;&#1581;&#1603;&#1577; &#1602;&#1604;&#1576;&#1603; &#1575;&#1604;&#1589;&#1575;&#1601;&#1610;&#1577; &#10024;', 'btn-1')">&#1593;&#1585;&#1590; &#1575;&#1604;&#1575;&#1601;&#1578;&#1578;&#1575;&#1581;&#1610;&#1577; &#128140;</button>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-header">
+                <h3 class="card-title">&#1571;&#1605;&#1606;&#1610;&#1577; &#1582;&#1575;&#1589;&#1577; &#127775;</h3>
+            </div>
+            <p id="text-2" class="typewriter-text"></p>
+            <!-- &#1585;&#1587;&#1575;&#1604;&#1577; &#1605;&#1582;&#1589;&#1589;&#1577; &#1576;&#1575;&#1587;&#1605;&#1603; -->
+            <button class="show-msg-btn" id="btn-2" onclick="typeWriter('text-2', '&#1610;&#1575; &#1606;&#1608;&#1585; &#1593;&#1610;&#1606;&#1610; &#1608;&#1610;&#1575; &#1583;&#1606;&#1610;&#1578;&#1610; &#1608;&#1605;&#1575; &#1601;&#1610;&#1607;&#1575;&#1548; &#1603;&#1604; &#1587;&#1606;&#1577; &#1608;&#1571;&#1606;&#1578;&#1616; &#1591;&#1610;&#1576;&#1577; &#1608;&#1601;&#1610; &#1585;&#1593;&#1575;&#1610;&#1577; &#1585;&#1576;&#1606;&#1575;. &#1576;&#1578;&#1605;&#1606;&#1575;&#1604;&#1603; &#1575;&#1604;&#1587;&#1606;&#1577; &#1583;&#1610; &#1578;&#1581;&#1602;&#1602;&#1610; &#1571;&#1594;&#1604;&#1609; &#1608;&#1571;&#1580;&#1605;&#1604; &#1605;&#1575; &#1576;&#1578;&#1578;&#1605;&#1606;&#1610;&#1607; &#1608;&#1578;&#1601;&#1590;&#1604;&#1610; &#1605;&#1606;&#1608;&#1585;&#1577; &#1581;&#1610;&#1575;&#1578;&#1610;.. &#1603;&#1604; &#1587;&#1606;&#1577; &#1608;&#1575;&#1606;&#1578;&#1610; &#1591;&#1610;&#1576;&#1577; &#1610;&#1575; &#1571;&#1581;&#1604;&#1609; &#1576;&#1606;&#1578; &#1582;&#1575;&#1604;&#1548; &#1610;&#1608;&#1587;&#1601; &#1575;&#1604;&#1589;&#1575;&#1608;&#1610; &#10024;', 'btn-2')">&#1593;&#1585;&#1590; &#1575;&#1604;&#1571;&#1605;&#1606;&#1610;&#1577; &#128140;</button>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-header">
+                <h3 class="card-title">&#1571;&#1604;&#1576;&#1608;&#1605; &#1575;&#1604;&#1584;&#1603;&#1585;&#1610;&#1575;&#1578; &#128248;</h3>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-light); text-align: right; margin-bottom: 15px;">&#1584;&#1603;&#1585;&#1610;&#1575;&#1578;&#1606;&#1575; &#1575;&#1604;&#1581;&#1604;&#1608;&#1577; &#1575;&#1604;&#1604;&#1610; &#1605;&#1581;&#1601;&#1608;&#1585;&#1577; &#1601;&#1610; &#1575;&#1604;&#1602;&#1604;&#1576;..</p>
+            
+            <!-- &#1571;&#1604;&#1576;&#1608;&#1605; &#1575;&#1604;&#1581;&#1576;&#1575;&#1604; (3 &#1601;&#1608;&#1602; &#1608; 3 &#1578;&#1581;&#1578;) -->
+            <div class="rope-album-container">
+                <div class="rope-row">
+                    <div class="rope-line"></div>
+                    <div class="photo-hanging"><div class="clip"></div><img id="album-img-0" src="photo1.jpg" alt="&#1589;&#1608;&#1585;&#1577;"></div>
+                    <div class="photo-hanging"><div class="clip"></div><img id="album-img-1" src="photo2.jpg" alt="&#1589;&#1608;&#1585;&#1577;"></div>
+                    <div class="photo-hanging"><div class="clip"></div><img id="album-img-2" src="photo3.jpg" alt="&#1589;&#1608;&#1585;&#1577;"></div>
+                </div>
+                <div class="rope-row" style="margin-top: 15px;">
+                    <div class="rope-line"></div>
+                    <div class="photo-hanging"><div class="clip"></div><img id="album-img-3" src="photo4.jpg" alt="&#1589;&#1608;&#1585;&#1577;"></div>
+                    <div class="photo-hanging"><div class="clip"></div><img id="album-img-4" src="photo5.jpg" alt="&#1589;&#1608;&#1585;&#1577;"></div>
+                    <div class="photo-hanging"><div class="clip"></div><img id="album-img-5" src="photo6.jpg" alt="&#1589;&#1608;&#1585;&#1577;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-header">
+                <h3 class="card-title">&#1601;&#1610;&#1583;&#1610;&#1608;&#1607;&#1575;&#1578;&#1606;&#1575; &#127909;</h3>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-light); text-align: right; margin-bottom: 10px;">&#1604;&#1581;&#1592;&#1575;&#1578;&#1606;&#1575; &#1575;&#1604;&#1604;&#1610; &#1576;&#1578;&#1578;&#1581;&#1585;&#1603; &#1608;&#1578;&#1590;&#1581;&#1603;..</p>
+            
+            <div class="video-box">
+                <video controls>
+                    <source src="video1.mp4" type="video/mp4">
+                    &#1605;&#1578;&#1589;&#1601;&#1581;&#1603; &#1604;&#1575; &#1610;&#1583;&#1593;&#1605; &#1578;&#1588;&#1594;&#1610;&#1604; &#1575;&#1604;&#1601;&#1610;&#1583;&#1610;&#1608;.
+                </video>
+            </div>
+        </div>
+
+        <div class="card fade-in" style="text-align: center;">
+            <h3 style="color: var(--text-dark); margin-top: 0; font-size: 1.2rem;">&#1585;&#1587;&#1575;&#1604;&#1577; &#1581;&#1576; &#1587;&#1585;&#1610;&#1577; &#1605;&#1582;&#1589;&#1589;&#1577; &#1604;&#1585;&#1608;&#1575;&#1606; &#128149;</h3>
+            <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 20px;">&#1575;&#1590;&#1594;&#1591;&#1610; &#1593;&#1604;&#1609; &#1575;&#1604;&#1582;&#1578;&#1605; &#1604;&#1601;&#1578;&#1581; &#1575;&#1604;&#1585;&#1587;&#1575;&#1604;&#1577; &#1575;&#1604;&#1582;&#1575;&#1589;&#1577;</p>
+            
+            <div class="seal-btn" onclick="openMessage()">
+                <div class="seal-circle">&#129293;</div>
+                <div style="color: var(--primary-pink); font-weight: bold;">&#1575;&#1590;&#1594;&#1591;&#1610; &#1575;&#1604;&#1582;&#1578;&#1605; &#1604;&#1601;&#1578;&#1581; &#1575;&#1604;&#1585;&#1587;&#1575;&#1604;&#1577; &#128274;</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ==========================================
+         5. &#1606;&#1575;&#1601;&#1584;&#1577; &#1575;&#1604;&#1585;&#1587;&#1575;&#1604;&#1577; &#1575;&#1604;&#1591;&#1608;&#1610;&#1604;&#1577; 
+         ========================================== -->
+    <div id="message-modal" class="hidden fade-in">
+        <div class="msg-box">
+            <h2>&#1585;&#1587;&#1575;&#1604;&#1577; &#1581;&#1576; &#1587;&#1585;&#1610;&#1577; &#128140;</h2>
+            
+            <p id="text-3" class="typewriter-text"></p>
+            <button class="show-msg-btn" id="btn-3" onclick="typeWriter('text-3', '&#1593;&#1610;&#1583; &#1605;&#1610;&#1604;&#1575;&#1583; &#1571;&#1581;&#1604;&#1609; &#1608;&#1571;&#1580;&#1605;&#1604; &#1608;&#1571;&#1591;&#1610;&#1576; &#1581;&#1583; &#1601;&#1610; &#1575;&#1604;&#1583;&#1606;&#1610;&#1575; &#1603;&#1604;&#1607;&#1575;.. \n\n &#1603;&#1604; &#1587;&#1606;&#1577; &#1608;&#1571;&#1606;&#1578;&#1616; &#1591;&#1610;&#1576;&#1577; &#1610;&#1575; &#1581;&#1576;&#1610;&#1576;&#1578;&#1610;&#1548; &#1603;&#1604; &#1587;&#1606;&#1577; &#1608;&#1571;&#1606;&#1578;&#1616; &#1605;&#1593;&#1575;&#1610;&#1575; &#1608;&#1605;&#1581;&#1604;&#1610;&#1575; &#1571;&#1610;&#1575;&#1605;&#1610;&#1548; &#1610;&#1575; &#1606;&#1608;&#1585; &#1593;&#1610;&#1606;&#1610; &#1608;&#1610;&#1575; &#1605;&#1607;&#1580;&#1577; &#1602;&#1604;&#1576;&#1610; &#1608;&#1610;&#1575; &#1601;&#1585;&#1581;&#1577; &#1593;&#1605;&#1585;&#1610;. \n\n &#1603;&#1604; &#1587;&#1606;&#1577; &#1608;&#1571;&#1606;&#1578;&#1616; &#1581;&#1576;&#1610;&#1576;&#1578;&#1610; &#1608;&#1585;&#1608;&#1581;&#1610;&#1548; &#1608;&#1585;&#1576;&#1606;&#1575; &#1610;&#1582;&#1604;&#1610;&#1603;&#1610; &#1604;&#1610;&#1575; &#1608;&#1605;&#1610;&#1581;&#1585;&#1605;&#1606;&#1610;&#1588; &#1605;&#1606;&#1603; &#1571;&#1576;&#1583;&#1575;&#1611; &#1610;&#1575; &#1581;&#1576;&#1610;&#1576;&#1577; &#1593;&#1610;&#1606;&#1610;. \n\n &#1576;&#1581;&#1576;&#1600;&#1600;&#1600;&#1600;&#1600;&#1600;&#1603; &#1580;&#1583;&#1575;&#1611; &#1580;&#1583;&#1575;&#1611; &#1580;&#1583;&#1575;&#1611; &#10084;&#65039;', 'btn-3')">&#1575;&#1602;&#1585;&#1571;&#1610; &#1575;&#1604;&#1585;&#1587;&#1575;&#1604;&#1577; &#128140;</button>
+            
+            <button class="pink-btn" style="margin-top: 20px;" onclick="closeMessage()">&#1573;&#1594;&#1604;&#1575;&#1602;</button>
+        </div>
+    </div>
+
+    <script>
+        // 1. &#1601;&#1581;&#1589; &#1575;&#1604;&#1576;&#1575;&#1587;&#1608;&#1585;&#1583;
+        function checkPass() {
+            var passValue = document.getElementById('pass-input').value.toLowerCase();
+            if (passValue.includes('31') || passValue.includes('&#1635;&#1633;') || passValue.includes('r')) {
+                document.getElementById('lock-screen').style.display = 'none';
+                document.getElementById('loading-screen').style.display = 'flex';
+                startLoading();
+            } else {
+                document.getElementById('error-text').style.display = 'block';
+            }
+        }
+
+        // 2. &#1575;&#1604;&#1578;&#1581;&#1605;&#1610;&#1604;
+        function startLoading() {
+            var progress = 0;
+            var bar = document.getElementById('loading-fill');
+            var text = document.getElementById('loading-text');
+            
+            var interval = setInterval(function() {
+                progress += 10; 
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    // &#1576;&#1593;&#1583; &#1575;&#1604;&#1578;&#1581;&#1605;&#1610;&#1604; &#1606;&#1608;&#1583;&#1610;&#1607;&#1575; &#1604;&#1588;&#1575;&#1588;&#1577; &#1573;&#1580;&#1576;&#1575;&#1585; &#1578;&#1588;&#1594;&#1610;&#1604; &#1575;&#1604;&#1589;&#1608;&#1578;
+                    document.getElementById('loading-screen').style.display = 'none';
+                    document.getElementById('audio-lock-screen').style.display = 'flex';
+                }
+                bar.style.width = progress + '%';
+                text.innerText = progress + '%';
+            }, 250); 
+        }
+
+        // 3. &#1576;&#1585;&#1605;&#1580;&#1577; &#1573;&#1580;&#1576;&#1575;&#1585; &#1578;&#1588;&#1594;&#1610;&#1604; &#1575;&#1604;&#1589;&#1608;&#1578; 
+        var mainAudio = document.getElementById('main-audio');
+        var stickyAudio = document.getElementById('sticky-audio-player');
+        var isUnlocked = false;
+
+        // &#1571;&#1608;&#1604; &#1605;&#1575; &#1578;&#1583;&#1608;&#1587; Play &#1593;&#1604;&#1609; &#1575;&#1604;&#1605;&#1604;&#1601; &#1601;&#1610; &#1588;&#1575;&#1588;&#1577; &#1575;&#1604;&#1573;&#1580;&#1576;&#1575;&#1585;
+        mainAudio.addEventListener('play', function() {
+            if (!isUnlocked) {
+                isUnlocked = true;
+                
+                // &#1606;&#1602;&#1601;&#1604; &#1588;&#1575;&#1588;&#1577; &#1575;&#1604;&#1573;&#1580;&#1576;&#1575;&#1585; &#1608;&#1606;&#1601;&#1578;&#1581; &#1575;&#1604;&#1605;&#1608;&#1602;&#1593;
+                document.getElementById('audio-lock-screen').style.display = 'none';
+                document.getElementById('main-screen').style.display = 'flex';
+                
+                // &#1606;&#1588;&#1594;&#1604; &#1588;&#1604;&#1575;&#1604; &#1575;&#1604;&#1576;&#1604;&#1575;&#1604;&#1610;&#1606; &#1608;&#1578;&#1602;&#1604;&#1610;&#1576; &#1575;&#1604;&#1589;&#1608;&#1585;
+                startConfettiShower();
+                setInterval(rotateAlbumPhotos, 5000);
+                
+                // &#1606;&#1608;&#1602;&#1601; &#1575;&#1604;&#1605;&#1588;&#1594;&#1604; &#1575;&#1604;&#1605;&#1572;&#1602;&#1578; &#1608;&#1606;&#1588;&#1594;&#1604; &#1575;&#1604;&#1605;&#1588;&#1594;&#1604; &#1575;&#1604;&#1571;&#1587;&#1575;&#1587;&#1610; &#1575;&#1604;&#1604;&#1610; &#1607;&#1610;&#1603;&#1605;&#1604; &#1605;&#1593;&#1575;&#1607;&#1575;
+                mainAudio.pause();
+                stickyAudio.currentTime = mainAudio.currentTime;
+                stickyAudio.play();
+            }
+        });
+
+        // 4. &#1583;&#1575;&#1604;&#1577; &#1575;&#1604;&#1603;&#1578;&#1575;&#1576;&#1577; &#1575;&#1604;&#1570;&#1604;&#1610;&#1577;
+        function typeWriter(textElementId, textContent, btnId) {
+            document.getElementById(btnId).style.display = 'none'; 
+            var el = document.getElementById(textElementId);
+            el.style.display = 'block'; 
+            el.innerHTML = ''; 
+            
+            var i = 0;
+            var formattedText = textContent.replace(/\n/g, "<br>");
+            var tempDiv = document.createElement('div');
+            tempDiv.innerHTML = formattedText;
+            var finalString = tempDiv.innerHTML;
+            var isTag = false;
+            var currentText = "";
+
+            function type() {
+                if (i < finalString.length) {
+                    var char = finalString.charAt(i);
+                    if (char === '<') isTag = true;
+                    if (char === '>') isTag = false;
+                    
+                    currentText += char;
+                    el.innerHTML = currentText;
+                    i++;
+                    
+                    if(isTag) {
+                        type();
+                    } else {
+                        setTimeout(type, 40); 
+                    }
+                }
+            }
+            type();
+        }
+
+        // 5. &#1606;&#1592;&#1575;&#1605; &#1578;&#1602;&#1604;&#1610;&#1576; &#1575;&#1604;&#1589;&#1608;&#1585; &#1575;&#1604;&#1570;&#1604;&#1610; &#1593;&#1604;&#1609; &#1575;&#1604;&#1581;&#1576;&#1604; (&#1610;&#1587;&#1578;&#1608;&#1593;&#1576; 30 &#1589;&#1608;&#1585;&#1577;)
+        const albumPhotos = Array.from({length: 30}, (_, i) => `photo${i+1}.jpg`);
+        let currentPhotoIndex = 0;
+
+        function rotateAlbumPhotos() {
+            for (let i = 0; i < 6; i++) {
+                let imgElement = document.getElementById('album-img-' + i);
+                if(imgElement) {
+                    imgElement.style.opacity = 0;
+                    setTimeout(() => {
+                        let newIndex = (currentPhotoIndex + i) % albumPhotos.length;
+                        imgElement.src = albumPhotos[newIndex];
+                        imgElement.style.opacity = 1;
+                    }, 500);
+                }
+            }
+            currentPhotoIndex = (currentPhotoIndex + 6) % albumPhotos.length;
+        }
+
+        // 6. &#1588;&#1604;&#1575;&#1604; &#1575;&#1604;&#1608;&#1585;&#1602; &#1575;&#1604;&#1605;&#1604;&#1608;&#1606; &#1608;&#1575;&#1604;&#1576;&#1604;&#1575;&#1604;&#1610;&#1606; 
+        function startConfettiShower() {
+            var duration = 5 * 1000; 
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
+
+            function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) { return clearInterval(interval); }
+                var particleCount = 50 * (timeLeft / duration);
+                
+                try {
+                    confetti(Object.assign({}, defaults, { 
+                        particleCount, 
+                        origin: { x: randomInRange(0.1, 0.9), y: Math.random() - 0.2 },
+                        colors: ['#ff4d79', '#ff7eb3', '#d4af37', '#ffffff'] 
+                    }));
+                } catch(e){}
+            }, 250);
+        }
+
+        // 7. &#1601;&#1578;&#1581; &#1608;&#1602;&#1601;&#1604; &#1575;&#1604;&#1585;&#1587;&#1575;&#1604;&#1577; &#1575;&#1604;&#1582;&#1578;&#1575;&#1605;&#1610;&#1577;
+        function openMessage() { document.getElementById('message-modal').style.display = 'flex'; }
+        function closeMessage() { document.getElementById('message-modal').style.display = 'none'; }
+    </script>
+</body>
+</html>
